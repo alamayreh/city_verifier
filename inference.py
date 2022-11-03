@@ -10,6 +10,8 @@ from utils import *
 from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
 from tqdm import tqdm
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
 
@@ -89,32 +91,35 @@ def parse_args():
 
 class SiameseNetworkDataset(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=256000):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
+        self.num_pairs = num_pairs
 
         self.dict = self.imageFolderDataset.class_to_idx
-
         self.dict_class = {v: k for k, v in self.dict.items()}
         logging.info(f"Class dictionary : \n {self.dict_class}")
 
     def __getitem__(self, index):
 
-        img0_tuple = random.choice(self.imageFolderDataset.imgs)
+        #img0_tuple = random.choice(self.imageFolderDataset.imgs)
 
-        should_get_same_class = random.randint(0, 1)
+        #should_get_same_class = random.randint(0, 1)
 
-        if should_get_same_class:
+        if (index < self.num_pairs/2):
             while True:
+                img0_tuple = random.choice(self.imageFolderDataset.imgs)
                 img1_tuple = random.choice(self.imageFolderDataset.imgs)
+                
                 if img0_tuple[1] == img1_tuple[1]:
                     # print("nowBreak")
                     break
         else:
             while True:
                 # keep looping till a different class image is found
-
+                img0_tuple = random.choice(self.imageFolderDataset.imgs)
                 img1_tuple = random.choice(self.imageFolderDataset.imgs)
+               
                 if img0_tuple[1] != img1_tuple[1]:
                     break
 
@@ -129,7 +134,7 @@ class SiameseNetworkDataset(Dataset):
 
     def __len__(self):
         # return len(self.imageFolderDataset.imgs)
-        return 256000
+        return self.num_pairs
 
 
 def test_dataloader(image_dir, batch_size, num_workers):
@@ -194,6 +199,8 @@ if __name__ == '__main__':
             model_sigmoid.cuda()
 
         correct = 0
+        y_true = []
+        y_pred = []
 
         for im1, im2, target, city_1, city_2 in tqdm(test_dataloader):
 
@@ -202,12 +209,28 @@ if __name__ == '__main__':
                 im2 = im2.cuda()
                 target = target.cuda()
 
+            ## For confusion matrix 
+            y_true_temp = target.cpu().detach().numpy()
+            for i in y_true_temp:
+                y_true.append(i[:])    
+
             output_model = model_sigmoid(im1, im2)
 
             pred = torch.where(output_model > 0.5, 1, 0)
 
+            # For confusion matrix 
+            y_pred_temp = pred.cpu().detach().numpy()
+            for i in y_pred_temp:
+                y_pred.append(i[:])
+
+
             correct = correct + pred.eq(target.view_as(pred)).sum().item()
 
+        print(confusion_matrix(y_true, y_pred))
+        print(confusion_matrix(y_true, y_pred, normalize='true'))
+        #print(confusion_matrix(y_true, y_pred, normalize='all'))
+
+        print(f'acc skealrn just to check {accuracy_score(y_true, y_pred) * 100 }')
         val_acc_sigmoid = 100. * correct / dataset_length
         print(f"val_acc sigmoid: {val_acc_sigmoid}")
 

@@ -62,7 +62,7 @@ def parse_args():
     args.add_argument(
         "--num_workers",
         type=int,
-        default=2,
+        default=24,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()

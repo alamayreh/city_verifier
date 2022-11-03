@@ -58,7 +58,7 @@ class SiameseNetworkDataset(Dataset):
                 img1_tuple = random.choice(self.imageFolderDataset.imgs)
                 # print('img0_tuple',img0_tuple)
                 # print('img1_tuple',img1_tuple)
-                if img0_tuple[1] == img1_tuple[1]:
+                if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
                     # print("nowBreak")
                     break
         else:
