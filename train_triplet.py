@@ -63,7 +63,7 @@ class SiameseNetwork(pl.LightningModule):
         self.hparams = hparams
         self.model, self.embedding = self.__build_model()
         self.class_weights = None
-        self.criterion = torch.nn.TripletMarginLoss(margin=self.hparams.margin)
+        self.criterion = torch.nn.TripletMarginLoss(margin=self.hparams.margin, swap = self.hparams.swap_triplet)
         self.total_number_training_images = 0
 
     def __build_model(self):

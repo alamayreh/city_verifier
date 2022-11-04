@@ -9,6 +9,7 @@ model_params:
   batch_size: 2304 # for 1 GPU
   val_check_interval: 111 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   margin: 1
+  swap_triplet : True
   threshold_distance: 0.5
   optim:
     # SGD

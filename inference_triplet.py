@@ -69,7 +69,7 @@ def test_dataloader(image_dir, batch_size, num_workers):
     DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir)
 
     dataset = SiameseNetworkDataset(
-        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=2048)
+        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=8192)
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
