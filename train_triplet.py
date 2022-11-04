@@ -12,16 +12,16 @@ import yaml
 from datetime import datetime
 from utils import *
 
-
 # export CUDA_VISIBLE_DEVICES=0,1,2,3
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
 # python3 train_triplet.py --config config/siamese_triplet.yml
 
 class SiameseNetworkDatasetTriplet(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=256000):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
+        self.num_pairs = num_pairs
 
     def __getitem__(self, index):
 
@@ -31,7 +31,7 @@ class SiameseNetworkDatasetTriplet(Dataset):
         while True:
             # keep looping till the same class image is found
             img_p_tuple = random.choice(self.imageFolderDataset.imgs)
-            if img_a_tuple[1] == img_p_tuple[1]:
+            if ((img_a_tuple[1] == img_p_tuple[1]) and (img_a_tuple[0] != img_p_tuple[0])):
                 break
         
         while True:
@@ -52,7 +52,7 @@ class SiameseNetworkDatasetTriplet(Dataset):
         return img_a, img_p, img_n
 
     def __len__(self):
-        return len(self.imageFolderDataset.imgs)
+        return self.num_pairs
 
 
 class SiameseNetwork(pl.LightningModule):
@@ -76,17 +76,21 @@ class SiameseNetwork(pl.LightningModule):
         nfeatures = model.fc.in_features
         model = torch.nn.Sequential(*list(model.children())[:-1])
 
-        #model.avgpool = torch.nn.AdaptiveAvgPool2d(1)
-        #model.flatten = torch.nn.Flatten(start_dim=1)
+        model.avgpool = torch.nn.AdaptiveAvgPool2d(1)
+        model.flatten = torch.nn.Flatten(start_dim=1)
 
         # Basic embedding layer
         embedding = torch.nn.Linear(nfeatures, self.hparams.embedding_dim)
 
         if self.hparams.weights:
-            logging.info("Load weights from pre-trained model")
-            model, embedding = load_weights_if_available(
-                model, embedding, self.hparams.weights
-            )
+            logging.info("Load weights from pre-trained (VIPP mdoel)")
+            model  = load_weights_CountryEstimation_model(model, self.hparams.weights)
+
+        if self.hparams.freezeBackbone:
+            logging.info("Freeze backbone")
+            for param in model.parameters():
+                param.requires_grad = False
+
 
         return model, embedding
 
@@ -192,7 +196,7 @@ class SiameseNetwork(pl.LightningModule):
             self.hparams.imageFolderTrain)
 
         dataset = SiameseNetworkDatasetTriplet(
-            imageFolderDataset=DatasetFolder_Train, transform=tfm_train)
+            imageFolderDataset=DatasetFolder_Train, transform=tfm_train, num_pairs = self.hparams.num_pairs)
 
         dataloader = torch.utils.data.DataLoader(
             dataset,
@@ -227,7 +231,8 @@ class SiameseNetwork(pl.LightningModule):
             self.hparams.imageFolderValid)
 
         dataset = SiameseNetworkDatasetTriplet(
-            imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid)
+            imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,num_pairs = self.hparams.num_pairs)
+
 
         dataloader = torch.utils.data.DataLoader(
             dataset,

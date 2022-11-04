@@ -68,9 +68,9 @@ def parse_args():
     args.add_argument(
         "--image_dir",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/cities/test"),
+        default=Path("/data/omran/cities_data/dataset/cities/test"),
         #default=Path("/data/omran/cities_data/dataset/open_set"),
-        default=Path("/data/omran/cities_data/dataset/cities/validation"),
+        #default=Path("/data/omran/cities_data/dataset/cities/validation"),
         help="Folder containing test set images.",
     )
     # environment
