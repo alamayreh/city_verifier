@@ -1,13 +1,13 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/resnet101_64_triplet_256000
+out_dir: /data/omran/cities_data/models/resnet101_64_triplet_256000_swap
 model_params:
   arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64
   weights: '/data/omran/cities_data/models/pre_tranined/resnet101_GeoVIPP.ckpt' #'/data2/omran/models/resnet50_1.sqrt/220606-1207/ckpts/epoch_8.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
   freezeBackbone : True 
-  num_pairs : 256000
-  batch_size: 2304 # for 1 GPU
-  val_check_interval: 111 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  num_pairs : 102400
+  batch_size: 1024 # for 1 GPU
+  val_check_interval: 100 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   margin: 1
   swap_triplet : True
   threshold_distance: 0.5
@@ -27,10 +27,10 @@ model_params:
   imageFolderTrain:  /data/omran/cities_data/dataset/cities/training
   imageFolderValid:  /data/omran/cities_data/dataset/cities/validation
     
-  num_workers: 24 #6
+  num_workers: 12 #6 per gpu 
 # paramters for pytorch lightning trainer class
 trainer_params:
-  gpus: 4
+  gpus: 2
   max_epochs: 1000
   distributed_backend: dp #dp #null #ddp
   precision: 16

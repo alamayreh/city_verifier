@@ -18,7 +18,7 @@ from utils import *
 
 class SiameseNetworkDatasetTriplet(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None, num_pairs=256000):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=None):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         self.num_pairs = num_pairs
@@ -132,10 +132,15 @@ class SiameseNetwork(pl.LightningModule):
         # Calculate Accuracy on the validation set:  
         # (anchor,postive -> label 0) 
 
+        cos = torch.nn.CosineSimilarity()
+
         correct_a_p = 0 
 
-        euclidean_distance_a_p = torch.nn.functional.pairwise_distance(output_a, output_p)
-        pred_a_p  = torch.where(euclidean_distance_a_p > self.hparams.threshold_distance, 1, 0)
+        #euclidean_distance_a_p = torch.nn.functional.pairwise_distance(output_a, output_p)
+        cos_distance_a_p    = cos(output_a, output_p)
+        cosine_distance_a_p = torch.ones_like(cos_distance_a_p) - cos_distance_a_p
+
+        pred_a_p  = torch.where(cosine_distance_a_p > self.hparams.threshold_distance, 1, 0)
         label_a_p = torch.zeros_like(pred_a_p) 
 
         correct_a_p += pred_a_p.eq(label_a_p.view_as(pred_a_p)).sum().item()
@@ -144,8 +149,11 @@ class SiameseNetwork(pl.LightningModule):
 
         correct_a_n = 0 
 
-        euclidean_distance_a_n = torch.nn.functional.pairwise_distance(output_a, output_n)
-        pred_a_n  = torch.where(euclidean_distance_a_n > self.hparams.threshold_distance, 1, 0)
+        #euclidean_distance_a_n= torch.nn.functional.pairwise_distance(output_a, output_n)
+        cos_distance_a_n = cos(output_a, output_n)  
+        cosine_distance_a_n = torch.ones_like(cos_distance_a_n) - cos_distance_a_n
+
+        pred_a_n  = torch.where(cosine_distance_a_n > self.hparams.threshold_distance, 1, 0)
         label_a_n = torch.ones_like(pred_a_n) 
 
         correct_a_n += pred_a_n.eq(label_a_n.view_as(pred_a_n)).sum().item()

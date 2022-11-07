@@ -21,13 +21,13 @@ def parse_args():
     args.add_argument(
         "--checkpoint_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000/221103-1054/ckpts/epoch_29.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221106-0636/ckpts/epoch.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000/221103-1054/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221106-0636/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
     args.add_argument(
@@ -48,7 +48,7 @@ def parse_args():
     args.add_argument(
         "--num_workers",
         type=int,
-        default=24,
+        default=8,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()

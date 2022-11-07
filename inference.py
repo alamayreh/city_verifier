@@ -83,7 +83,7 @@ def parse_args():
     args.add_argument(
         "--num_workers",
         type=int,
-        default=24,
+        default=6,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()
@@ -91,7 +91,7 @@ def parse_args():
 
 class SiameseNetworkDataset(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None, num_pairs=256000):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=None):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         self.num_pairs = num_pairs
