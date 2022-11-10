@@ -2,6 +2,7 @@ import torch
 import random
 import logging
 import torchvision
+import pandas as pd
 from PIL import Image
 from argparse import  ArgumentParser
 from pathlib import Path
@@ -12,8 +13,8 @@ from tqdm import tqdm
 from os import listdir
 from os.path import isfile, join
 
-#python3 verifier_sigmoid.py_365 --gpu
-#export CUDA_VISIBLE_DEVICES=3
+#python3 verifier_sigmoid_365.py --gpu
+#export CUDA_VISIBLE_DEVICES=2
 
 def parse_args():
     args = ArgumentParser()
@@ -31,20 +32,31 @@ def parse_args():
     )
 
     args.add_argument(
+        "--database_csv",
+        type=Path,
+        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/training/Tokyo.csv"), #Rio_de_Janeiro
+        help="CSV file for images database.",
+    )
+
+    args.add_argument(
         "--image_dir_database",
         type=Path,
         default=Path("/data/omran/cities_data/dataset/cities/training/Tokyo"),
-        #default=Path("/data/omran/cities_data/dataset/open_set"),
-        #default=Path("/data/omran/cities_data/dataset/cities/test_10_images_ready/Cairo"),
-        help="Folder containing test set images of the database.",
+        help="Folder contians database images.",
     )
+
+    args.add_argument(
+        "--image_csv_test",
+        type=Path,
+        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/test"),
+        help="Folder containing CSV files meta data for of test images.",
+    )
+
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/cities/training/Cairo"),
-        #default=Path("/data/omran/cities_data/dataset/open_set"),
         default=Path("/data/omran/cities_data/dataset/cities/test"),
-        help="Folder containing test set images of the database.",
+        help="Folder containing CSV files meta data for of test images.",
     )
     # environment
     args.add_argument(
@@ -52,7 +64,8 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=512)
+    args.add_argument("--batch_size", type=int, default=128)
+
     args.add_argument(
         "--city_class",
         type=str,
@@ -62,38 +75,53 @@ def parse_args():
     args.add_argument(
         "--num_workers",
         type=int,
-        default=48,
+        default=1,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()
 
 class SiameseNetworkDataset(Dataset):
 
-    def __init__(self, imageFolder,image_path, transform=None):
-
-        self.imageFolder = imageFolder
-        self.transform   = transform
-        self.image_path  = image_path
+    def __init__(self, database_csv, database_folder, image_path, image_prob, transform=None):
 
 
-        # Images of the databse to compare with 
-        self.images_Folder_files = [f for f in listdir(self.imageFolder) if isfile(join(self.imageFolder, f))]
+        self.database_folder = database_folder
+        self.image_path      = image_path
+        self.image_prob      = image_prob
+        self.transform       = transform
 
-        #logging.info(f"Image Folder :  {self.imageFolder} and Image Path {self.image_path}")
-       
+        self.cos             = torch.nn.CosineSimilarity()
+        self.database_csv    = pd.read_csv(database_csv)#.reset_index(drop=True)
+
+ 
+    def __len__(self):
+
+        return self.database_csv.shape[0]
 
     def __getitem__(self, index):
-
-        #print(f'index : {index}')
-
-        #one_image = (str(self.imageFolder) + '/' + self.images_Folder_files[index])
-        
-        #print(f'image path           : {one_image}')
-        #print(f'image to verfiy path : {self.image_path}')
-
+     
         #print('#################################################')
+        #print(f'index : {index}')
+        #print(self.database_csv.iloc[index])        
+        #print(self.database_csv.iloc[index].IMG_ID)        
+        #print(img0_prob)   
+        
+        img0_prob_str = ((self.database_csv.iloc[index].Probabily_365)[1:])[:-1].split(' ')
+        img0_prob     = [float(i) for i in img0_prob_str]
 
-        img0 = Image.open(str(self.imageFolder) + '/' + self.images_Folder_files[index])
+        img0_probality = torch.FloatTensor([img0_prob])
+        img1_probality = torch.FloatTensor([self.image_prob])
+
+        euclidean_distance = torch.nn.functional.pairwise_distance(img0_probality, img1_probality)
+        #cos_distance    = self.cos(img0_probality, img1_probality)       
+        #similarity      = torch.ones_like(cos_distance) - cos_distance      
+
+        similarity      = 1 / euclidean_distance 
+
+        #print(f'euclidean_distance: {euclidean_distance} and similarity : {similarity}')
+
+        
+        img0 = Image.open(str(self.database_folder) + '/' + self.database_csv.iloc[index].IMG_ID)
         img1 = Image.open(self.image_path)
 
 
@@ -101,16 +129,12 @@ class SiameseNetworkDataset(Dataset):
             img0 = self.transform(img0)
             img1 = self.transform(img1)
 
-        return img0, img1
-
-    def __len__(self):
-
-        return len(listdir(self.imageFolder))
+        return img0, img1, similarity
 
 
-def test_dataloader(images_dir,image_path, batch_size, num_workers):
 
-    # logging.info("val_dataloader")
+
+def test_dataloader(database_csv,image_dir_database,image_path,image_prob, batch_size, num_workers):
 
     tfm_test = torchvision.transforms.Compose(
         [
@@ -122,9 +146,7 @@ def test_dataloader(images_dir,image_path, batch_size, num_workers):
 
     #DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir_database)
 
-
-
-    dataset = SiameseNetworkDataset(imageFolder=images_dir,image_path=image_path, transform=tfm_test)    
+    dataset = SiameseNetworkDataset(database_csv=database_csv,database_folder=image_dir_database,image_path=image_path,image_prob=image_prob, transform=tfm_test)    
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
@@ -160,60 +182,81 @@ if __name__ == '__main__':
         model_sigmoid.cuda()
 
 
+    # Read cities from dir test 
     for filename in listdir(args.image_dir_test):
+    #for filename in ['Moscow']:
 
         logging.info(f"Test {filename} on {args.image_dir_database} database")
+
         test_dir = join(args.image_dir_test, filename)
 
         num_images_verified = 0
 
-        for image in tqdm(listdir(test_dir)):
+        test_csv_file = str(join(args.image_csv_test, filename)) + '.csv'
+
+        test_image_db = pd.read_csv(test_csv_file)
+
+
+        for index, row in tqdm(test_image_db.iterrows(),  total=(test_image_db.shape[0])):
             
-            image_path = join(test_dir, image)
+            image_path = str(join(test_dir, row.IMG_ID)) 
+
+            image_prob_str =((row.Probabily_365)[1:])[:-1].split(' ')
+            image_prob = [float(i) for i in image_prob_str]
 
             #logging.info(f"test image : {image_path}")
+            #logging.info(f"test image  image_prob: {type(image_prob[0])}")
 
-            test_dataloader_one_image = test_dataloader(args.image_dir_database,image_path, args.batch_size, args.num_workers)
+            test_dataloader_one_image = test_dataloader(args.database_csv,args.image_dir_database,image_path,image_prob, args.batch_size, args.num_workers)
 
             dataset_length = len(test_dataloader_one_image.dataset)
             #logging.info(f"Number of images: {dataset_length}")
 
             if len(test_dataloader_one_image.dataset) == 0:
                 raise RuntimeError(f"No images found in {args.image_dir_database}")
+                
 
-            correct = 0 
+            correct    = 0           
+            p_same_sum = 0 
+            p_diff_sum = 0 
 
-            
-
-            for im1,im2  in (test_dataloader_one_image):
-
+            for im1,im2, w_similarity  in (test_dataloader_one_image):
+                     
                 if args.gpu:
                     im1 = im1.cuda()
                     im2 = im2.cuda()
+                    w_similarity = w_similarity.cuda()
 
 
                 output_model = model_sigmoid(im1, im2)
-        
 
+                output_model = output_model.detach()
                 # in training 0 -> same class, and 1 diff class 
                 # if the probablity < 0.5 vote 1 
-        
-                pred = torch.where(output_model < 0.5, 1, 0)
+                    # same                                     # diff
+                p_same = (torch.ones_like(output_model)-output_model) * w_similarity 
+                p_diff = (output_model) * w_similarity
 
-                correct +=  (pred).sum().item()
+                #print(f'output_model : {output_model}')
+                #print(f'w_similarity : {w_similarity}')
+                #print(f'p_same : {p_same}')
+                #print(f'p_diff : {p_diff}')
+                
 
+                p_same_sum += p_same.sum().item()
+                p_diff_sum += p_diff.sum().item()
 
-            
+                #pred = torch.where(output_model < 0.5, 1, 0)
 
-            votes = 100. * correct / dataset_length
+                #correct +=  (pred).sum().item()
+         
 
-            if(votes > 50):
+            #votes = 100. * correct / dataset_length
+
+            if(p_same_sum > p_diff_sum):
                 num_images_verified += 1
+                #print(f'The image belong to the databset')
 
-
-            #print('#################################################')
-            #print(f'Number of votes                  : {correct}')
-            #print(f"votes  percent                   : {votes} %")
        
         print(f'Number of images verified {filename}             : {num_images_verified}')
         print('#################################################')
