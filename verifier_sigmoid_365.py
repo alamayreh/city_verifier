@@ -8,13 +8,12 @@ from argparse import  ArgumentParser
 from pathlib import Path
 from utils import *
 from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
-from train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
 from tqdm import tqdm
 from os import listdir
 from os.path import isfile, join
 
 #python3 verifier_sigmoid_365.py --gpu
-#export CUDA_VISIBLE_DEVICES=2
+#export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
     args = ArgumentParser()
@@ -64,7 +63,7 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=128)
+    args.add_argument("--batch_size", type=int, default=230)
 
     args.add_argument(
         "--city_class",
@@ -204,7 +203,7 @@ if __name__ == '__main__':
             image_prob_str =((row.Probabily_365)[1:])[:-1].split(' ')
             image_prob = [float(i) for i in image_prob_str]
 
-            #logging.info(f"test image : {image_path}")
+            logging.info(f"test image : {image_path}")
             #logging.info(f"test image  image_prob: {type(image_prob[0])}")
 
             test_dataloader_one_image = test_dataloader(args.database_csv,args.image_dir_database,image_path,image_prob, args.batch_size, args.num_workers)
@@ -252,10 +251,12 @@ if __name__ == '__main__':
          
 
             #votes = 100. * correct / dataset_length
-
+            print(f'p_same_sum : {p_same_sum} and p_diff_sum :{p_diff_sum}')
+            
             if(p_same_sum > p_diff_sum):
                 num_images_verified += 1
-                #print(f'The image belong to the databset')
+
+                print(f'The image belong to the databset')
 
        
         print(f'Number of images verified {filename}             : {num_images_verified}')
