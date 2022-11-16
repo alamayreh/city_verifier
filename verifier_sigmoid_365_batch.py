@@ -12,9 +12,10 @@ from tqdm import tqdm
 from os import listdir
 from os.path import isfile, join
 
-#Rio_de_Janeiro
 
-#python3 verifier_sigmoid_365_batch.py --test_city Moscow --database_city Roma
+#[Moscow,London,Shanghai,Cairo,Delhi,New_york,Rio_de_Janeiro,Sydney,Roma,Tokyo]
+
+#python3 verifier_sigmoid_365_batch.py --test_city Tokyo --database_city Tokyo
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -290,4 +291,4 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/{args.test_city}_on_{args.test_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/{args.test_city}_on_{args.database_city}_database.csv',index=False)

@@ -21,13 +21,13 @@ def parse_args():
     args.add_argument(
         "--checkpoint_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221106-0636/ckpts/epoch.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/ckpts/epoch_117.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221106-0636/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
     args.add_argument(
@@ -48,7 +48,7 @@ def parse_args():
     args.add_argument(
         "--num_workers",
         type=int,
-        default=8,
+        default=2,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()
@@ -69,7 +69,7 @@ def test_dataloader(image_dir, batch_size, num_workers):
     DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir)
 
     dataset = SiameseNetworkDataset(
-        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=8192)
+        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=32768)
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
