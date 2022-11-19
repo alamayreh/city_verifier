@@ -15,7 +15,7 @@ from datetime import datetime
 from utils import *
 import torchvision.models.detection as detection
 
-# export CUDA_VISIBLE_DEVICES=4,5,6,7
+# export CUDA_VISIBLE_DEVICES=2,3,4,5,6,7
 # python3 train_sigmoid.py --config config/siamese_resnet101_sigmoid.yml
 
 class SiameseNetworkDataset(Dataset):

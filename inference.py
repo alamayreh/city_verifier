@@ -24,7 +24,8 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_Nonlinearty_pretrain_VIPPGeo/221011-1211/ckpts/epoch_94.ckpt"),
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/ckpts/epoch_15.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/ckpts/epoch_621.ckpt"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
@@ -33,7 +34,7 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
     
@@ -79,7 +80,7 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=512)
+    args.add_argument("--batch_size", type=int, default=20)
     args.add_argument(
         "--num_workers",
         type=int,
@@ -91,7 +92,7 @@ def parse_args():
 
 class SiameseNetworkDataset(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None, num_pairs=None):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=25600):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         self.num_pairs = num_pairs

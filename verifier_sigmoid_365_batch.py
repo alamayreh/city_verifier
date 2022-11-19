@@ -23,13 +23,15 @@ def parse_args():
     args.add_argument(
         "--checkpoint_sigmoid",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_sigmoid",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
 
@@ -80,7 +82,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=800)
+    args.add_argument("--batch_size", type=int, default=40)
 
    
     args.add_argument(
@@ -291,4 +293,4 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_noVipp/{args.test_city}_on_{args.database_city}_database.csv',index=False)

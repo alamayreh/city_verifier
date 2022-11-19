@@ -21,13 +21,16 @@ def parse_args():
     args.add_argument(
         "--checkpoint_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/ckpts/epoch_117.ckpt"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/ckpts/epoch_117.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_noVIPP/221118-0817/ckpts/epoch1.ckpt"),
+        
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_triplet",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_triplet_256000_swap/221107-0439/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_triplet_noVIPP/221118-0817/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
     args.add_argument(
@@ -44,7 +47,7 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=512)
+    args.add_argument("--batch_size", type=int, default=12)
     args.add_argument(
         "--num_workers",
         type=int,
@@ -69,7 +72,7 @@ def test_dataloader(image_dir, batch_size, num_workers):
     DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir)
 
     dataset = SiameseNetworkDataset(
-        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=32768)
+        imageFolderDataset=DatasetFolder_test, transform=tfm_test, num_pairs=9600)
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
@@ -142,7 +145,7 @@ if __name__ == '__main__':
 
         cosine_distance = torch.ones_like(cos_distance) - cos_distance
 
-        pred = torch.where(cosine_distance > 0.5, 1, 0)
+        pred = torch.where(cosine_distance > 0.7, 1, 0)
 
 
         # For confusion matrix 
