@@ -14,10 +14,11 @@ import math
 
 #("Moscow" "London" "Shanghai" "Cairo" "Delhi" "New_york" "Rio_de_Janeiro" "Sydney" "Roma" "Tokyo")
 
-#python3 analysis_results.py --test_city New_york --database_city New_york
-#python3 analysis_results.py --test_city Shanghai --database_city Shanghai
-#python3 analysis_results.py --test_city Tokyo --database_city Tokyo
-#python3 analysis_results.py --test_city London --database_city London
+#python3 analysis_results_rejection.py --test_city New_york --database_city New_york
+#python3 analysis_results_rejection.py --test_city Shanghai --database_city Shanghai
+#python3 analysis_results_rejection.py --test_city Tokyo --database_city Tokyo
+#python3 analysis_results_rejection.py --test_city London --database_city London
+#python3 analysis_results_rejection.py --test_city Tokyo --database_city London
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -40,7 +41,8 @@ def parse_args():
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results"), 
+        default=Path("/data/omran/cities_data/results/sigmoid_vipp"), 
+        #default=Path("/data/omran/cities_data/results/sigmoid_noVipp"), 
         help="Results CSVs folder.",
     )
 
@@ -85,7 +87,7 @@ def Probability_365(Probability_365):
 
     #image_prob= [0 if i < 0.1 else i for i in image_prob]
 
-    return image_prob
+    return image_prob#[10:]
 
 
 def distance_euclidean(Probability_365_base,IMG_ID_data_base,Probability_365_test,IMG_ID_test):
@@ -135,20 +137,49 @@ if __name__ == '__main__':
     df = pd.merge(df, database_simialrity_db, on="IMG_ID_data_base")
     df = pd.merge(df, test_simialrity_db,     on="IMG_ID_test")
 
-
+    #Number of test images 
+    number_test_images_input = df['IMG_ID_test'].nunique()
+    
     #Remove out list 
     #out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
     #values_list = out_list['IMG_ID'].tolist()
     #df = df[~df['IMG_ID_test'].isin(values_list)]
 
-    
-    df["votes_sigmoid"] = (np.where(df['sigmoid_output'] > 0.5,0,1))
-
-    df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.9,1,0))
-    df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.1,1,0))
-
+    # compute Euclidean and Cosine distances 
     df['eDistance'] = df.apply(lambda x: distance_euclidean(x.Probability_365_base,x.IMG_ID_data_base, x.Probability_365_test,x.IMG_ID_test), axis=1)
     df['cDistance'] = df.apply(lambda x: distance_cos(x.Probability_365_base, x.Probability_365_test), axis=1)
+
+    print(df)
+    # remove images in the database if they are not simialr to the input test images 
+    df.query('eDistance <= 0.1',inplace=True)
+
+    # Get images in the test input who has at least 100 images 
+    freq = ((df.groupby('IMG_ID_test')['IMG_ID_data_base'].nunique()))
+
+    freq = freq[freq >= 4]
+    numer_accepted_images = len(freq) 
+
+    freq = freq.reset_index(name='freq')
+
+    print(freq)
+
+    #Remove out list 
+    #out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
+    values_list = freq['IMG_ID_test'].tolist()
+    df = df[df['IMG_ID_test'].isin(values_list)]
+
+    print(f"Number of accepted images { df['IMG_ID_test'].nunique()}" )
+
+
+    df["votes_sigmoid"] = (np.where(df['sigmoid_output'] > 0.5,0,1))
+    df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.5,1,0))
+    df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.5,1,0))
+
+
+
+
+
+    #print(df)
 
     df.drop(columns=['IMG_ID_data_base','Probability_365_base','Probability_365_test'],inplace=True)
 
@@ -164,7 +195,8 @@ if __name__ == '__main__':
     df_sum = df.groupby('IMG_ID_test').sum()
 
     len_images = len(df_sum.index)
-    print(df_sum)
+    
+    #print(df_sum)
 
     same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
     same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
@@ -176,6 +208,7 @@ if __name__ == '__main__':
     same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c']))
 
     print((f"Analysis results Test {args.test_city} city on {args.database_city} database"))
+    print(f'Number of Accepted Images : {numer_accepted_images} out of {number_test_images_input}')
     print("####################################################################")
     print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
     print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
