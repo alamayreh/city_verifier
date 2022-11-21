@@ -149,19 +149,19 @@ if __name__ == '__main__':
     df['eDistance'] = df.apply(lambda x: distance_euclidean(x.Probability_365_base,x.IMG_ID_data_base, x.Probability_365_test,x.IMG_ID_test), axis=1)
     df['cDistance'] = df.apply(lambda x: distance_cos(x.Probability_365_base, x.Probability_365_test), axis=1)
 
-    print(df)
+    #print(df)
     # remove images in the database if they are not simialr to the input test images 
     df.query('eDistance <= 0.1',inplace=True)
 
     # Get images in the test input who has at least 100 images 
     freq = ((df.groupby('IMG_ID_test')['IMG_ID_data_base'].nunique()))
 
-    freq = freq[freq >= 4]
+    freq = freq[freq >= 10]
     numer_accepted_images = len(freq) 
 
     freq = freq.reset_index(name='freq')
 
-    print(freq)
+    #print(freq)
 
     #Remove out list 
     #out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
@@ -172,6 +172,7 @@ if __name__ == '__main__':
 
 
     df["votes_sigmoid"] = (np.where(df['sigmoid_output'] > 0.5,0,1))
+
     df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.5,1,0))
     df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.5,1,0))
 
@@ -198,8 +199,8 @@ if __name__ == '__main__':
     
     #print(df_sum)
 
-    same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
-    same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
+    #same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
+    #same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
     same_thr         = (np.where(df_sum['votes_same'] > df_sum['votes_diff'], 1, 0)).sum()
 
     same_db_prob    = (np.where(df_sum['probablity_same']   > df_sum['probablity_diff']))
@@ -210,8 +211,8 @@ if __name__ == '__main__':
     print((f"Analysis results Test {args.test_city} city on {args.database_city} database"))
     print(f'Number of Accepted Images : {numer_accepted_images} out of {number_test_images_input}')
     print("####################################################################")
-    print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
-    print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
+    #print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
+    #print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
     print(f"Based on votes_sigmoid > 0.90 and < 0.01                 : {same_thr / len_images}")
     print("####################################################################")
     
