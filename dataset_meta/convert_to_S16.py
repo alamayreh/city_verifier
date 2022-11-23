@@ -30,13 +30,13 @@ def convert_to_S16(input_prob,scene_matrix,IMG_ID,city ):
     s16 = Probability_16 / np.linalg.norm(Probability_16, ord=1)
 
     if (np.sum(s16[0:10]) > np.sum(s16[10:])):
-        print(f"We have got a problem here /data/omran/cities_data/dataset/cities/training/{city[:-4]}/{IMG_ID}")
+        print(f"We have got a problem here /data/omran/cities_data/dataset/cities/validation/{city[:-4]}/{IMG_ID}")
 
     return s16
 
 
 
-folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/training"
+folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/validation"
 
 for i in os.listdir(folder_path):
 
