@@ -11,7 +11,8 @@ from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from tqdm import tqdm
 from os import listdir
 from os.path import isfile, join
-
+import math
+from scipy import spatial
 
 #[Moscow,London,Shanghai,Cairo,Delhi,New_york,Rio_de_Janeiro,Sydney,Roma,Tokyo]
 
@@ -111,7 +112,27 @@ class SiameseNetworkDataset(Dataset):
     def __len__(self):
 
         return self.database_csv.shape[0]
+    
+    def string_to_prob(string_prob):
 
+        # Read probability from datafram 
+        image_prob_str = ((string_prob)[1:])[:-1].split()
+        image_prob = [float(i) for i in image_prob_str]
+        
+        return image_prob
+
+    def distance_euclidean(prob_0,prob_1):
+
+        eDistance = math.dist((prob_0),(prob_1))
+
+        return (eDistance)
+
+    def distance_cos(prob_0,prob_1):
+
+        cDistance = spatial.distance.cosine(prob_0, prob_1)
+
+        return (cDistance)
+   
     def __getitem__(self, index):
      
         #print('#################################################')
@@ -126,7 +147,7 @@ class SiameseNetworkDataset(Dataset):
         img0_probality = torch.FloatTensor([img0_prob])
         img1_probality = torch.FloatTensor([self.image_prob])
 
-        euclidean_distance = torch.nn.functional.pairwise_distance(img0_probality, img1_probality)
+        euclidean_distance = distance_cos(img0_probality, img1_probality)
         #cos_distance    = self.cos(img0_probality, img1_probality)       
         #similarity      = torch.ones_like(cos_distance) - cos_distance      
 
