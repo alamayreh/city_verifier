@@ -7,8 +7,8 @@ from PIL import Image
 from argparse import ArgumentParser
 from pathlib import Path
 from utils import *
-from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
-from train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
+from training.train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
+from training.train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
 from tqdm import tqdm
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
@@ -25,7 +25,9 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/ckpts/epoch_15.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/ckpts/epoch_621.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/ckpts/epoch_57.ckpt"),
+        
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
@@ -34,7 +36,9 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/tb_logs/version_0/hparams.yaml"),
+
         help="Path to hparams file (*.yaml) generated during training",
     )
     
@@ -69,9 +73,9 @@ def parse_args():
     args.add_argument(
         "--image_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/test"),
+        #default=Path("/data/omran/cities_data/dataset/cities/test"),
         #default=Path("/data/omran/cities_data/dataset/open_set"),
-        #default=Path("/data/omran/cities_data/dataset/cities/validation"),
+        default=Path("/data/omran/cities_data/dataset/filtered/test"),
         help="Folder containing test set images.",
     )
     # environment
@@ -80,11 +84,11 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=20)
+    args.add_argument("--batch_size", type=int, default=48)
     args.add_argument(
         "--num_workers",
         type=int,
-        default=6,
+        default=1,
         help="Number of workers for image loading and pre-processing",
     )
     return args.parse_args()

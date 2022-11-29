@@ -33,7 +33,7 @@ model_params:
 # paramters for pytorch lightning trainer class
 trainer_params:
   gpus: 4
-  max_epochs: 1000
+  max_epochs: 10000
   distributed_backend: dp #dp #null #ddp
   precision: 16
   reload_dataloaders_every_epoch: true # necessary to shuffle IterableDataset

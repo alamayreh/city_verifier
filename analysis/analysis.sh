@@ -6,8 +6,8 @@ declare -a city_list=("Moscow" "London" "Shanghai" "Cairo" "Delhi" "New_york" "R
  
 # Iterate the string array using for loop
 for city in ${city_list[@]}; do
-   #python3 analysis_results.py --test_city Cairo --database_city $city
-   python3 analysis_results_rejection.py --test_city Tokyo --database_city $city
+   python3 analysis_results.py --test_city Tokyo --database_city $city
+   #python3 analysis_results_rejection.py --test_city London --database_city $city
    #sleep 1m
 done
 

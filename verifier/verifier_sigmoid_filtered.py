@@ -7,7 +7,8 @@ from PIL import Image
 from argparse import  ArgumentParser
 from pathlib import Path
 from utils import *
-from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
+#from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
+from training.train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from tqdm import tqdm
 from os import listdir
 from os.path import isfile, join
@@ -16,7 +17,7 @@ from scipy import spatial
 
 #[Moscow,London,Shanghai,Cairo,Delhi,New_york,Rio_de_Janeiro,Sydney,Roma,Tokyo]
 
-#python3 verifier_sigmoid_365_batch.py --test_city Tokyo --database_city Tokyo
+#python3 verifier_sigmoid_365_filtered.py --test_city Tokyo --database_city Tokyo
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -24,29 +25,27 @@ def parse_args():
     args.add_argument(
         "--checkpoint_sigmoid",
         type=Path,
-        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/ckpts/epoch_57.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_sigmoid",
         type=Path,
-        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
+          default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
 
     args.add_argument(
-        "--database_csv",
+        "--S16_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/training"), 
+        default=Path("/data/omran/cities_data/dataset/database.csv"), 
         help="CSV folder for images database.",
     )
     
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/training"),
+        default=Path("/data/omran/cities_data/dataset/filtered/training"),
         help="Folder contians database images.",
     )
 
@@ -57,16 +56,9 @@ def parse_args():
     )
 
     args.add_argument(
-        "--image_csv_test",
-        type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/test"),
-        help="Folder containing CSV files meta data for of test images.",
-    )
-
-    args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/test"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
@@ -83,8 +75,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=40)
-
+    args.add_argument("--batch_size", type=int, default=250)
    
     args.add_argument(
         "--num_workers",
@@ -104,14 +95,13 @@ class SiameseNetworkDataset(Dataset):
         self.image_prob      = image_prob
         self.IMG_ID_test     = IMG_ID_test
         self.transform       = transform
-
-        #self.cos             = torch.nn.CosineSimilarity()
-        self.database_csv    = pd.read_csv(database_csv)#.reset_index(drop=True)
+        self.database_csv    = database_csv
+        self.images_database = listdir(database_folder)
 
  
     def __len__(self):
 
-        return self.database_csv.shape[0]
+        return len(self.images_database)
     
     def string_to_prob(string_prob):
 
@@ -121,13 +111,13 @@ class SiameseNetworkDataset(Dataset):
         
         return image_prob
 
-    def distance_euclidean(prob_0,prob_1):
+    def distance_euclidean(self,prob_0,prob_1):
 
         eDistance = math.dist((prob_0),(prob_1))
 
         return (eDistance)
 
-    def distance_cos(prob_0,prob_1):
+    def distance_cos(self,prob_0,prob_1):
 
         cDistance = spatial.distance.cosine(prob_0, prob_1)
 
@@ -135,28 +125,20 @@ class SiameseNetworkDataset(Dataset):
    
     def __getitem__(self, index):
      
-        #print('#################################################')
-        #print(f'index : {index}')
-        #print(self.database_csv.iloc[index])        
-        #print(self.database_csv.iloc[index].IMG_ID)        
-        #print(img0_prob)   
+        IMG_ID_base = self.images_database[index]
+        #print(f"image_database {IMG_ID_base}")
         
-        img0_prob_str = ((self.database_csv.iloc[index].Probabily_365)[1:])[:-1].split(' ')
-        img0_prob     = [float(i) for i in img0_prob_str]
+        img0_prob_str = (self.database_csv.loc[IMG_ID_base].S16)
+        img0_prob     = string_to_prob(img0_prob_str)
 
-        img0_probality = torch.FloatTensor([img0_prob])
-        img1_probality = torch.FloatTensor([self.image_prob])
-
-        euclidean_distance = distance_cos(img0_probality, img1_probality)
-        #cos_distance    = self.cos(img0_probality, img1_probality)       
-        #similarity      = torch.ones_like(cos_distance) - cos_distance      
-
-        similarity      = 1 / euclidean_distance 
+ 
+        distance = self.distance_cos(img0_prob, self.image_prob)
+        similarity      = torch.from_numpy(np.array([distance],dtype=np.float32))
 
         #print(f'euclidean_distance: {euclidean_distance} and similarity : {similarity}')
 
         
-        img0 = Image.open(str(self.database_folder) + '/' + self.database_csv.iloc[index].IMG_ID)
+        img0 = Image.open(str(self.database_folder) + '/' + IMG_ID_base)
         img1 = Image.open(self.image_path)
 
 
@@ -164,8 +146,7 @@ class SiameseNetworkDataset(Dataset):
             img0 = self.transform(img0)
             img1 = self.transform(img1)
 
-        IMG_ID_base = self.database_csv.iloc[index].IMG_ID
-        
+       
         return self.IMG_ID_test, IMG_ID_base, img0, img1, similarity
 
 
@@ -187,9 +168,13 @@ def test_dataloader(database_csv,image_dir_database,image_path,image_prob,IMG_ID
 
     return dataset
 
-def get_percent_vote_per_image():
+def string_to_prob(string_prob):
 
-    return 0 
+    # Read probability from datafram
+    image_prob_str = ((string_prob)[1:])[:-1].split()
+    image_prob = [float(i) for i in image_prob_str]
+
+    return image_prob
 
 if __name__ == '__main__':
 
@@ -218,29 +203,30 @@ if __name__ == '__main__':
 
     logging.info(f"Test {args.test_city} city on {args.database_city} database")
 
+    db_similarity =  pd.read_csv(args.S16_csv, usecols=['IMG_ID','S16']).set_index('IMG_ID')
+
     # ream metadata files 
     test_dir      = join(args.image_dir_test, args.test_city)
-    test_csv_file = str(join(args.image_csv_test, args.test_city)) + '.csv'
- 
-    test_image_db = pd.read_csv(test_csv_file)
-
+    
     image_dir    = join(args.image_dir_database, args.database_city)
-    database_csv = str(join(args.database_csv, args.database_city)) + '.csv'
 
     # construct dataloader 
     test_dataset_list = []
 
     logging.info("Building dataloader")
 
-    for index, row in tqdm(test_image_db.iterrows(),  total=(test_image_db.shape[0])):
+    #for index, row in tqdm(test_image_db.iterrows(),  total=(test_image_db.shape[0])):
+    for image_path in tqdm(listdir(test_dir)):
             
-        image_path = str(join(test_dir, row.IMG_ID)) 
+        image_path = str(join(test_dir, image_path)) 
 
-        image_prob_str =((row.Probabily_365)[1:])[:-1].split(' ')
-        image_prob = [float(i) for i in image_prob_str]
+        IMG_ID_test =  image_path.split('/')[-1]
+
+        image_prob_str =  db_similarity.loc[IMG_ID_test].S16
+        image_prob     =  string_to_prob (image_prob_str)            
 
 
-        test_dataset_one_image = test_dataloader(database_csv,image_dir,image_path,image_prob,IMG_ID_test=row.IMG_ID)
+        test_dataset_one_image = test_dataloader(db_similarity,image_dir,image_path,image_prob,IMG_ID_test)
         test_dataset_list.append(test_dataset_one_image)
 
 
@@ -314,4 +300,4 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_noVipp/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered/{args.test_city}_on_{args.database_city}_database.csv',index=False)

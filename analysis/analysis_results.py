@@ -5,7 +5,6 @@ from PIL import Image
 from argparse import  ArgumentParser
 from pathlib import Path
 from utils import *
-from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from tqdm import tqdm
 from os.path import isfile, join
 import math
@@ -40,7 +39,7 @@ def parse_args():
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results"), 
+        default=Path("/data/omran/cities_data/results/sigmoid_filtered"), 
         help="Results CSVs folder.",
     )
 
@@ -48,7 +47,8 @@ def parse_args():
     args.add_argument(
         "--outlist_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/out_list_test"), 
+        #default=Path("/data/omran/cities_data/dataset/cities/out_list_test"), 
+        default=Path("/data/omran/cities_data/dataset/cities/out_list_Vipp"), 
         help="Results CSVs folder.",
     )
 
@@ -114,6 +114,9 @@ def distance_cos(Probability_365_test,Probability_365_base):
 
     return (cDistance + 0.01)  
 
+def add_jpeg_suffix(in_string):
+    return (in_string + '.jpeg')
+
 if __name__ == '__main__':
 
     args = parse_args()
@@ -137,59 +140,63 @@ if __name__ == '__main__':
 
 
     #Remove out list 
-    #out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
-    #values_list = out_list['IMG_ID'].tolist()
-    #df = df[~df['IMG_ID_test'].isin(values_list)]
+    out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
+    out_list['IMG_ID'] = out_list.apply(lambda x: add_jpeg_suffix(x.IMG_ID),axis=1)        
+    values_list = out_list['IMG_ID'].tolist()
+    #print(values_list)
+    df = df[~df['IMG_ID_test'].isin(values_list)]
+
+    print(f"Number of accepted images { df['IMG_ID_test'].nunique()}" )
 
     
     df["votes_sigmoid"] = (np.where(df['sigmoid_output'] > 0.5,0,1))
 
-    df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.9,1,0))
-    df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.1,1,0))
+    df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.5,1,0))
+    df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.5,1,0))
 
-    df['eDistance'] = df.apply(lambda x: distance_euclidean(x.Probability_365_base,x.IMG_ID_data_base, x.Probability_365_test,x.IMG_ID_test), axis=1)
-    df['cDistance'] = df.apply(lambda x: distance_cos(x.Probability_365_base, x.Probability_365_test), axis=1)
+    #df['eDistance'] = df.apply(lambda x: distance_euclidean(x.Probability_365_base,x.IMG_ID_data_base, x.Probability_365_test,x.IMG_ID_test), axis=1)
+    #df['cDistance'] = df.apply(lambda x: distance_cos(x.Probability_365_base, x.Probability_365_test), axis=1)
 
     df.drop(columns=['IMG_ID_data_base','Probability_365_base','Probability_365_test'],inplace=True)
 
 
-    df['probablity_same_e'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / math.sqrt(x.eDistance)), axis=1)
-    df['probablity_diff_e'] = df.apply(lambda x:    (  x.sigmoid_output) * (1 / math.sqrt(x.eDistance)), axis=1)
+    #df['probablity_same_e'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / (x.eDistance)), axis=1)
+    #df['probablity_diff_e'] = df.apply(lambda x:    (  x.sigmoid_output) * (1 / (x.eDistance)), axis=1)
 
-    df['probablity_same_c'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / math.sqrt(x.cDistance)), axis=1)
-    df['probablity_diff_c'] = df.apply(lambda x:    (  x.sigmoid_output) * (1 / math.sqrt(x.cDistance)), axis=1)
+    #df['probablity_same_c'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / (x.cDistance)), axis=1)
+    #df['probablity_diff_c'] = df.apply(lambda x:    (  x.sigmoid_output) * (1 / (x.cDistance)), axis=1)
 
 
 
     df_sum = df.groupby('IMG_ID_test').sum()
 
     len_images = len(df_sum.index)
-    print(df_sum)
+    #print(df_sum)
 
-    same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
-    same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
+    #same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
+    #same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
     same_thr         = (np.where(df_sum['votes_same'] > df_sum['votes_diff'], 1, 0)).sum()
 
     same_db_prob    = (np.where(df_sum['probablity_same']   > df_sum['probablity_diff']))
 
-    same_e_distance = (np.where(df_sum['probablity_same_e'] > df_sum['probablity_diff_e']))
-    same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c']))
+    #same_e_distance = (np.where(df_sum['probablity_same_e'] > df_sum['probablity_diff_e']))
+    #same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c']))
 
     print((f"Analysis results Test {args.test_city} city on {args.database_city} database"))
-    print("####################################################################")
-    print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
-    print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
-    print(f"Based on votes_sigmoid > 0.90 and < 0.01                 : {same_thr / len_images}")
+    #print("####################################################################")
+    #print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
+    #print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
+    print(f"Based on votes_sigmoid > 0.5 and < 0.5                 : {same_thr / len_images}")
     print("####################################################################")
     
    
 
-    print(f"Based on probablity_same_similarity all 365 Euclidean    : {same_db_prob[0].size / len_images}")
+    #print(f"Based on probablity_same_similarity all 365 Euclidean    : {same_db_prob[0].size / len_images}")
     #print(f"Based on probablity_same_similarity all 365 Cosine       : {same_db_prob[0].size}")
 
-    print(f"Based on probablity_same_similarity S16 Euclidean        : {same_e_distance[0].size  / len_images}")
-    print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")
-    print("####################################################################")
+    #print(f"Based on probablity_same_similarity S16 Euclidean        : {same_e_distance[0].size  / len_images}")
+    #print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")
+    #print("####################################################################")
 
     #test_dir      = join(args.image_dir_test, args.test_city)
     #print("Images belongs to the dataste : ")
