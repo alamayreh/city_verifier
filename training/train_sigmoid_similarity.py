@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/data/omran/siamese_cities')
 import random
 import torch
 import logging
@@ -16,9 +18,10 @@ from scipy import spatial
 import pandas as pd
 import os
 from os.path import isfile, join
+
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
 # python3 train_sigmoid_similarity.py --config config/siamese_resnet101_sigmoid.yml
-
+# python3 train_sigmoid_similarity.py --config ~/siamese_cities/config/siamese_resnet101_sigmoid.yml
 
 class SiameseNetworkDataset(Dataset):
 
@@ -63,7 +66,7 @@ class SiameseNetworkDataset(Dataset):
 
         cDistance = spatial.distance.cosine(prob_0, prob_1)
 
-        return (cDistance)
+        return (1- cDistance)
 
     def get_IMG_ID(self,path_string):
         image_prob_str = path_string.split('/')
@@ -76,46 +79,51 @@ class SiameseNetworkDataset(Dataset):
 
         # we need to make sure approx 50% of images are in the same class
         should_get_same_class = random.randint(0, 1)
-
+        cos_dist = 0
         if should_get_same_class:
             while True:
                 # keep looping till the same class image is found
                 img1_tuple = random.choice(self.imageFolderDataset.imgs)
                 if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
-                    break
+                    if(self.similarity_training):
+                        img0_ID = (self.get_IMG_ID(img0_tuple[0]))
+                        img1_ID = (self.get_IMG_ID(img1_tuple[0]))
+                        cos_dist = self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16) 
+                        if(cos_dist>0.5):
+                            break
+                    
+                        # 1 -> same content, 0 -> diff content
+                    #else:
+                    #    break
         else:
             while True:
                 # keep looping till a different class image is found
                 img1_tuple = random.choice(self.imageFolderDataset.imgs)
 
                 if img0_tuple[1] != img1_tuple[1]:
-                    break
+                    if(self.similarity_training):
+                        img0_ID = (self.get_IMG_ID(img0_tuple[0]))
+                        img1_ID = (self.get_IMG_ID(img1_tuple[0]))
+                        cos_dist = self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16) 
+                        if(cos_dist>0.5):
+                            break                    
+                    #else:
+                    #    break
 
                 
         img0 = Image.open(img0_tuple[0])
         img1 = Image.open(img1_tuple[0])
-
-
-
-        if(self.similarity_training):
-            img0_ID = (self.get_IMG_ID(img0_tuple[0]))
-            img1_ID = (self.get_IMG_ID(img1_tuple[0]))
-            similarity      = self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16) 
-            # 0 -> same content, 1-> diff content
-        else: 
-            similarity = 1   
-
 
         if self.transform is not None:
             img0 = self.transform(img0)
             img1 = self.transform(img1)
 
         
-        #print(f'{img0_tuple[0]} | {img1_tuple[0]} \n Simialrity {similarity}')
+        #print(f'{img0_tuple[0]} | {img1_tuple[0]} \n Simialrity {cos_dist}')
         #print('------------------------------------------------------------------------------------------------------')    
 
         # Same 0 city, diff 1 citiy     
-
+        similarity = 1  
         return img0, img1, torch.from_numpy(np.array([int(img1_tuple[1] != img0_tuple[1])], dtype=np.float32)),torch.from_numpy(np.array([similarity],dtype=np.float32))
 
     def __len__(self):
@@ -131,7 +139,7 @@ class SiameseNetwork(pl.LightningModule):
         self.hparams = hparams
         self.model,  self.embedding_one_net, self.embedding_two_net, self.sigmoid = self.__build_model()
         self.class_weights = None
-        self.total_number_training_images = 0
+        self.total_number_training_images = 0 # just to print the total number of images only in the first loop
 
     def __build_model(self):
         logging.info("Build model")
@@ -275,7 +283,7 @@ class SiameseNetwork(pl.LightningModule):
 
         DatasetFolder_Train = torchvision.datasets.ImageFolder(
             self.hparams.imageFolderTrain)
-
+        #logging.info(f"Build train")
         #  imageFolderDataset, database_csv_File, transform=None, num_pairs=25600)    
         dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Train, transform=tfm_train,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs=self.hparams.num_pairs)
 
@@ -310,9 +318,9 @@ class SiameseNetwork(pl.LightningModule):
         )
 
         DatasetFolder_Valid = torchvision.datasets.ImageFolder(self.hparams.imageFolderValid)
-
+        #logging.info(f"Build validation")
         dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs / 10) )
-
+        #logging.info(f"Finish validation")
         dataloader = torch.utils.data.DataLoader(
             dataset,
             batch_size=self.hparams.batch_size,
@@ -320,6 +328,10 @@ class SiameseNetwork(pl.LightningModule):
             pin_memory=True,
         )
 
+        #self.total_number_training_images = len(dataloader.dataset)
+        #logging.info(f"\nThe total number of samples : {self.total_number_training_images}")
+        #logging.info('#####################################################################')
+        #logging.info('#####################################################################')
         return dataloader
 
 
