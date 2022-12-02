@@ -6,9 +6,9 @@ model_params:
   weights: '/data/omran/cities_data/models/pre_tranined/resnet101_GeoVIPP.ckpt' #'/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/ckpts/epoch_599.ckpt' #'/data2/omran/models/resnet50_1.sqrt/220606-1207/ckpts/epoch_8.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
   similarity_training: true 
   freezeBackbone : true
-  num_pairs : 10240
-  batch_size: 1024 # for 1 GPU
-  val_check_interval: 9 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  num_pairs : 102400
+  batch_size: 2048 # for 1 GPU
+  val_check_interval: 50 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   
   margin: 1.0
   optim:
@@ -27,7 +27,7 @@ model_params:
   imageFolderTrain:  /data/omran/cities_data/dataset/filtered/training
   imageFolderValid:  /data/omran/cities_data/dataset/filtered/validation
 
-  database_csv: /data/omran/cities_data/dataset/S16_database.csv
+  database_csv:      /data/omran/cities_data/dataset/S16_database.csv
 
   num_workers: 6 #6
 # paramters for pytorch lightning trainer class

@@ -32,16 +32,7 @@ class SiameseNetworkDataset(Dataset):
         self.num_pairs = num_pairs
         self.similarity_training = similarity_training
         self.database_csv = pd.read_csv(database_csv_File,usecols=['IMG_ID','S16']).set_index('IMG_ID')
-
-    #def get_dataframe(self,database_csv_File):
-        
-    #    list = []
-    #    for file in os.listdir(database_csv_File):
-    #        list.append(pd.read_csv(join(database_csv_File, file),usecols = ['IMG_ID','S16']))
-    #    database_csv  = pd.concat(list, axis=0).reset_index(drop=True)    
-    
-    #    return  database_csv   
-  
+ 
     def string_to_prob(self, string_prob):
 
         # Read probability from datafram
@@ -80,36 +71,45 @@ class SiameseNetworkDataset(Dataset):
         # we need to make sure approx 50% of images are in the same class
         should_get_same_class = random.randint(0, 1)
         cos_dist = 0
-        if should_get_same_class:
-            while True:
-                # keep looping till the same class image is found
-                img1_tuple = random.choice(self.imageFolderDataset.imgs)
-                if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
-                    if(self.similarity_training):
+
+        if(self.similarity_training):
+            if should_get_same_class:
+                while True:
+                    # keep looping till the same class image is found
+                    img1_tuple = random.choice(self.imageFolderDataset.imgs)
+                    if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
                         img0_ID = (self.get_IMG_ID(img0_tuple[0]))
                         img1_ID = (self.get_IMG_ID(img1_tuple[0]))
-                        cos_dist = self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16) 
+                        cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
                         if(cos_dist>0.5):
                             break
-                    
-                        # 1 -> same content, 0 -> diff content
-                    #else:
-                    #    break
-        else:
-            while True:
-                # keep looping till a different class image is found
-                img1_tuple = random.choice(self.imageFolderDataset.imgs)
+            else:
+                while True:
+                    # keep looping till a different class image is found
+                    img1_tuple = random.choice(self.imageFolderDataset.imgs)
 
-                if img0_tuple[1] != img1_tuple[1]:
-                    if(self.similarity_training):
+                    if img0_tuple[1] != img1_tuple[1]:
                         img0_ID = (self.get_IMG_ID(img0_tuple[0]))
                         img1_ID = (self.get_IMG_ID(img1_tuple[0]))
-                        cos_dist = self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16) 
+                        cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
                         if(cos_dist>0.5):
                             break                    
-                    #else:
-                    #    break
+                      
+        else:
 
+            if should_get_same_class:
+                while True:
+                    # keep looping till the same class image is found
+                    img1_tuple = random.choice(self.imageFolderDataset.imgs)
+                    if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
+                        break
+                    
+            else:
+                while True:
+                    # keep looping till a different class image is found
+                    img1_tuple = random.choice(self.imageFolderDataset.imgs)
+                    if img0_tuple[1] != img1_tuple[1]:
+                        break                    
                 
         img0 = Image.open(img0_tuple[0])
         img1 = Image.open(img1_tuple[0])
@@ -222,6 +222,8 @@ class SiameseNetwork(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
 
+        #logging.info("start validation step")
+
         x0, x1, target, similarity = batch
         output_model = self(x0, x1)
 
@@ -243,6 +245,8 @@ class SiameseNetwork(pl.LightningModule):
 
         self.log_dict({"val_loss": loss, "val_acc": val_acc},
                       prog_bar=True, logger=True, on_epoch=True)
+
+        #logging.info("End validation step")
 
         return loss
 
@@ -319,7 +323,7 @@ class SiameseNetwork(pl.LightningModule):
 
         DatasetFolder_Valid = torchvision.datasets.ImageFolder(self.hparams.imageFolderValid)
         #logging.info(f"Build validation")
-        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs / 10) )
+        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs / 1024) )
         #logging.info(f"Finish validation")
         dataloader = torch.utils.data.DataLoader(
             dataset,
