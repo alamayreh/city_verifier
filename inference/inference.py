@@ -1,4 +1,5 @@
-from email.policy import default
+import sys
+sys.path.insert(0, '/data/omran/siamese_cities')
 import torch
 import random
 import logging
@@ -26,7 +27,7 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/ckpts/epoch_621.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/ckpts/epoch_57.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
         
         help="Checkpoint to already trained model (*.ckpt)",
     )
@@ -37,7 +38,7 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344//tb_logs/version_0/hparams.yaml"),
 
         help="Path to hparams file (*.yaml) generated during training",
     )
@@ -73,9 +74,9 @@ def parse_args():
     args.add_argument(
         "--image_dir",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/cities/test"),
+        default=Path("/data/omran/cities_data/dataset/cities/test"),
         #default=Path("/data/omran/cities_data/dataset/open_set"),
-        default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/test"),
         help="Folder containing test set images.",
     )
     # environment
@@ -84,7 +85,7 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=48)
+    args.add_argument("--batch_size", type=int, default=768)
     args.add_argument(
         "--num_workers",
         type=int,

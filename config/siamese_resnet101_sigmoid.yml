@@ -29,7 +29,7 @@ model_params:
 
   database_csv:      /data/omran/cities_data/dataset/S16_database.csv
 
-  num_workers: 6 #6
+  num_workers: 12 #6
 # paramters for pytorch lightning trainer class
 trainer_params:
   gpus: 4

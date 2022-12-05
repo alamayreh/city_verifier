@@ -323,7 +323,7 @@ class SiameseNetwork(pl.LightningModule):
 
         DatasetFolder_Valid = torchvision.datasets.ImageFolder(self.hparams.imageFolderValid)
         #logging.info(f"Build validation")
-        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs / 1024) )
+        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs / 100) )
         #logging.info(f"Finish validation")
         dataloader = torch.utils.data.DataLoader(
             dataset,

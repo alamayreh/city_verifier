@@ -1,5 +1,6 @@
+import sys
+sys.path.insert(0, '/data/omran/siamese_cities')
 import torch
-import random
 import logging
 import torchvision
 import pandas as pd
@@ -7,7 +8,6 @@ from PIL import Image
 from argparse import  ArgumentParser
 from pathlib import Path
 from utils import *
-#from train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from training.train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
 from tqdm import tqdm
 from os import listdir
@@ -17,7 +17,7 @@ from scipy import spatial
 
 #[Moscow,London,Shanghai,Cairo,Delhi,New_york,Rio_de_Janeiro,Sydney,Roma,Tokyo]
 
-#python3 verifier_sigmoid_365_filtered.py --test_city Tokyo --database_city Tokyo
+#python3 verifier_sigmoid_filtered.py --test_city Tokyo --database_city Tokyo
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -25,20 +25,20 @@ def parse_args():
     args.add_argument(
         "--checkpoint_sigmoid",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/ckpts/epoch_57.ckpt"),
+        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_sigmoid",
         type=Path,
-          default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221125-0637/tb_logs/version_0/hparams.yaml"),
+          default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344//tb_logs/version_0/hparams.yaml"),
         help="Path to hparams file (*.yaml) generated during training",
     )
 
     args.add_argument(
         "--S16_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/database.csv"), 
+        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
         help="CSV folder for images database.",
     )
     
@@ -75,7 +75,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=250)
+    args.add_argument("--batch_size", type=int, default=200)
    
     args.add_argument(
         "--num_workers",
@@ -121,7 +121,7 @@ class SiameseNetworkDataset(Dataset):
 
         cDistance = spatial.distance.cosine(prob_0, prob_1)
 
-        return (cDistance)
+        return (1-cDistance)
    
     def __getitem__(self, index):
      
@@ -199,8 +199,6 @@ if __name__ == '__main__':
 
     # Read cities from dir test 
    
-
-
     logging.info(f"Test {args.test_city} city on {args.database_city} database")
 
     db_similarity =  pd.read_csv(args.S16_csv, usecols=['IMG_ID','S16']).set_index('IMG_ID')
@@ -273,31 +271,13 @@ if __name__ == '__main__':
         IMG_ID_test      = np.array(IMG_ID_test).reshape(-1,1)
         IMG_ID_data_base = np.array(IMG_ID_data_base).reshape(-1,1)
 
-        #print("IMG_ID_test",(IMG_ID_test).shape)
-        #print("IMG_ID_data_base",(IMG_ID_data_base))
-
-        #print("p_same",(p_same.cpu().detach().numpy()).shape)
-        #print("p_diff",p_diff.cpu().detach().numpy())
-
-        #print("output_model",output_model.cpu().detach().numpy())
-        #print("w_similarity",w_similarity.cpu().detach().numpy())
-        
+       
         one_patch = np.hstack((IMG_ID_test,IMG_ID_data_base,w_similarity.cpu().detach().numpy(),output_model.cpu().detach().numpy(),p_same.cpu().detach().numpy(),p_diff.cpu().detach().numpy()))
         
 
         
         out_db = pd.concat([out_db, pd.DataFrame(one_patch,columns=['IMG_ID_test','IMG_ID_data_base','similarity','sigmoid_output','probablity_same','probablity_diff'])], axis=0)
 
-        #df2 = pd.DataFrame(np.zeros((df.shape[0], 3), dtype=int), columns=list('DEF')) 
-        #pd.concat([df, df2], axis=1)
-        #if(first == True):
-        ##    print(one_patch.shape)
-        #   print(one_patch)  
-        #   print(out_db)       
-        #   first=False 
-       
-
-
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)

@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/data/omran/siamese_cities')
 import logging
 from scipy import spatial
 import pandas as pd
@@ -16,7 +18,7 @@ import math
 #python3 analysis_results.py --test_city New_york --database_city New_york
 #python3 analysis_results.py --test_city Shanghai --database_city Shanghai
 #python3 analysis_results.py --test_city Tokyo --database_city Tokyo
-#python3 analysis_results.py --test_city London --database_city London
+#python3 analysis_results.py --test_city Moscow --database_city Moscow
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -39,7 +41,7 @@ def parse_args():
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/sigmoid_filtered"), 
+        default=Path("/data/omran/cities_data/results/sigmoid_filtered_datast"), 
         help="Results CSVs folder.",
     )
 
@@ -129,22 +131,21 @@ if __name__ == '__main__':
     df = pd.read_csv(f'{args.results_dir}/{args.test_city}_on_{args.database_city}_database.csv')
 
     # Read similarity  
-    test_simialrity_db           =  pd.read_csv(str(join(args.image_csv_test, args.test_city)) + '.csv' ,  usecols=['IMG_ID', 'S16'])
-    test_simialrity_db.rename(columns={'IMG_ID': 'IMG_ID_test', 'S16': 'Probability_365_test'}, inplace=True)
+    #test_simialrity_db           =  pd.read_csv(str(join(args.image_csv_test, args.test_city)) + '.csv' ,  usecols=['IMG_ID', 'S16'])
+    #test_simialrity_db.rename(columns={'IMG_ID': 'IMG_ID_test', 'S16': 'Probability_365_test'}, inplace=True)
 
-
-    database_simialrity_db = pd.read_csv(str(join(args.database_csv, args.database_city)) + '.csv',  usecols=['IMG_ID', 'S16'])
-    database_simialrity_db.rename(columns={'IMG_ID': 'IMG_ID_data_base', 'S16': 'Probability_365_base'}, inplace=True)
-    df = pd.merge(df, database_simialrity_db, on="IMG_ID_data_base")
-    df = pd.merge(df, test_simialrity_db,     on="IMG_ID_test")
+    #database_simialrity_db = pd.read_csv(str(join(args.database_csv, args.database_city)) + '.csv',  usecols=['IMG_ID', 'S16'])
+    #database_simialrity_db.rename(columns={'IMG_ID': 'IMG_ID_data_base', 'S16': 'Probability_365_base'}, inplace=True)
+    #df = pd.merge(df, database_simialrity_db, on="IMG_ID_data_base")
+    #df = pd.merge(df, test_simialrity_db,     on="IMG_ID_test")
 
 
     #Remove out list 
-    out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
-    out_list['IMG_ID'] = out_list.apply(lambda x: add_jpeg_suffix(x.IMG_ID),axis=1)        
-    values_list = out_list['IMG_ID'].tolist()
+    #out_list = pd.read_csv(str(join(args.outlist_dir, args.test_city)) + '.csv')
+    #out_list['IMG_ID'] = out_list.apply(lambda x: add_jpeg_suffix(x.IMG_ID),axis=1)        
+    #values_list = out_list['IMG_ID'].tolist()
     #print(values_list)
-    df = df[~df['IMG_ID_test'].isin(values_list)]
+    #df = df[~df['IMG_ID_test'].isin(values_list)]
 
     print(f"Number of accepted images { df['IMG_ID_test'].nunique()}" )
 
@@ -154,10 +155,11 @@ if __name__ == '__main__':
     df["votes_diff"]    = (np.where(df['sigmoid_output'] > 0.5,1,0))
     df["votes_same"]    = (np.where(df['sigmoid_output'] < 0.5,1,0))
 
+    #print(df.head())
     #df['eDistance'] = df.apply(lambda x: distance_euclidean(x.Probability_365_base,x.IMG_ID_data_base, x.Probability_365_test,x.IMG_ID_test), axis=1)
     #df['cDistance'] = df.apply(lambda x: distance_cos(x.Probability_365_base, x.Probability_365_test), axis=1)
 
-    df.drop(columns=['IMG_ID_data_base','Probability_365_base','Probability_365_test'],inplace=True)
+    #df.drop(columns=['IMG_ID_data_base','Probability_365_base','Probability_365_test'],inplace=True)
 
 
     #df['probablity_same_e'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / (x.eDistance)), axis=1)
@@ -166,15 +168,17 @@ if __name__ == '__main__':
     #df['probablity_same_c'] = df.apply(lambda x:  (1 - x.sigmoid_output) * (1 / (x.cDistance)), axis=1)
     #df['probablity_diff_c'] = df.apply(lambda x:    (  x.sigmoid_output) * (1 / (x.cDistance)), axis=1)
 
+    number_voters_per_image =  df['IMG_ID_data_base'].nunique()
 
+    #print(number_voters_per_image)
 
     df_sum = df.groupby('IMG_ID_test').sum()
 
     len_images = len(df_sum.index)
     #print(df_sum)
 
-    #same_db_sig      = (np.where(df_sum['votes_sigmoid'] > 800))
-    #same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < 800))
+    same_db_sig      = (np.where(df_sum['votes_sigmoid'] > number_voters_per_image / 2 ))
+    same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < number_voters_per_image / 2 ))
     same_thr         = (np.where(df_sum['votes_same'] > df_sum['votes_diff'], 1, 0)).sum()
 
     same_db_prob    = (np.where(df_sum['probablity_same']   > df_sum['probablity_diff']))
@@ -183,20 +187,20 @@ if __name__ == '__main__':
     #same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c']))
 
     print((f"Analysis results Test {args.test_city} city on {args.database_city} database"))
-    #print("####################################################################")
-    #print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
-    #print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
-    print(f"Based on votes_sigmoid > 0.5 and < 0.5                 : {same_thr / len_images}")
-    print("####################################################################")
+    print("--------------------------------------------------------------------")
+    print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
+    print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
+    print(f"Based on votes_sigmoid > 0.5 and < 0.5                   : {same_thr / len_images}")
+    print("--------------------------------------------------------------------")
     
    
 
     #print(f"Based on probablity_same_similarity all 365 Euclidean    : {same_db_prob[0].size / len_images}")
-    #print(f"Based on probablity_same_similarity all 365 Cosine       : {same_db_prob[0].size}")
+    print(f"Based on probablity_same_similarity all 16 Cosine        : {same_db_prob[0].size /  len_images}")
 
     #print(f"Based on probablity_same_similarity S16 Euclidean        : {same_e_distance[0].size  / len_images}")
     #print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")
-    #print("####################################################################")
+    print("####################################################################")
 
     #test_dir      = join(args.image_dir_test, args.test_city)
     #print("Images belongs to the dataste : ")

@@ -94,12 +94,17 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
     return 0
 
 
-meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/training'
-folder_in_images = '/data/omran/cities_data/dataset/cities/training'
-folder_out_images= '/data/omran/cities_data/dataset/filtered/training'
+#meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/training'
+#folder_in_images = '/data/omran/cities_data/dataset/cities/training'
+#folder_out_images= '/data/omran/cities_data/dataset/filtered/training'
 
-#for city in os.listdir(meta_folder_path):
-for city in ['Sydney.csv']:
+meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/open_set'
+folder_in_images = '/data/omran/cities_data/dataset/open_set'
+folder_out_images= '/data/omran/cities_data/dataset/filtered/open_set'
+
+    
+for city in os.listdir(meta_folder_path):
+#for city in ['Sydney.csv']:
 
 
     df = pd.read_csv(join(meta_folder_path, city))
