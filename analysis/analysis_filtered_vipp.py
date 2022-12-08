@@ -25,6 +25,7 @@ def parse_args():
         "--S16_database",
         type=Path,
         default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        #default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
         help="CSV folder for images database.",
     )
     
@@ -32,6 +33,7 @@ def parse_args():
         "--vipp_database",
         type=Path,
         default=Path("/data/omran/cities_data/dataset/Vipp_classes.csv"),
+        #default=Path("/data/omran/cities_data/dataset/Vipp_classes_open_set.csv"),
         help="Folder containing CSV files meta data for all images.",
     )
 
@@ -39,6 +41,7 @@ def parse_args():
         "--results_dir",
         type=Path,
         default=Path("/data/omran/cities_data/results/sigmoid_filtered_datast"), 
+        #default=Path("/data/omran/cities_data/results/sigmoid_filtered_datast_open_set"), 
         help="Results CSVs folder.",
     )
 
@@ -104,7 +107,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    vipp_classes = {"Cairo":44,"Delhi":14,"London":1,"Moscow":22,"New_york":0,"Rio_de_Janeiro":11,"Roma":5,"Shanghai":10,"Sydney":8,"Tokyo":7}    
+    vipp_classes = {"Cairo":44,"Delhi":14,"London":1,"Moscow":22,"New_york":0,"Rio_de_Janeiro":11,"Roma":5,"Shanghai":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
     print(f"Analysis results Test {args.test_city} city on {args.database_city} database, Criterion Top {Top} \n")
 
     # Read results 
@@ -118,9 +121,10 @@ if __name__ == '__main__':
     img_test_list = df["IMG_ID_test"].unique()
     len_images = len(img_test_list)
     print(f"Number of input images from the test city {args.test_city}      : {len_images}" )
-    out_list = [i for i in img_test_list if vipp_classes[args.test_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)]
-    df = df[~df['IMG_ID_test'].isin(out_list)]
-    print(f"Number of accepted images from the test city {args.test_city}   : { df['IMG_ID_test'].nunique()}" )
+
+    #out_list = [i for i in img_test_list if vipp_classes[args.test_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)]
+    #df = df[~df['IMG_ID_test'].isin(out_list)]
+    #print(f"Number of accepted images from the test city {args.test_city}   : { df['IMG_ID_test'].nunique()}" )
 
     # Remove images from the test set, if the database city is not in on of the top 5 of the classifier output.
     img_test_list = df["IMG_ID_test"].unique()
@@ -142,7 +146,7 @@ if __name__ == '__main__':
 
 
     #df.query('cDistance >= 0.5', inplace=True)
-    print(df.head())
+    #print(df.head())
     print(f"Number of voters from database city {args.database_city} per image  : {number_voters_per_image}\n" )
 
     #print(df.head())

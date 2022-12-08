@@ -4,4 +4,4 @@ done
 
 
 shuf -n 200 -e *.jpeg | xargs -i mv {} ~/siamese_cities/dataset/cities/test/Tokyo
-shuf -n 200 -e *.jpeg | xargs -i mv {} ~/siamese_cities/dataset/cities/validation/Tokyo
+shuf -n 60 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/to_delete

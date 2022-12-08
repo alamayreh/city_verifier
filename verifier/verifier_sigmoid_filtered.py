@@ -38,14 +38,16 @@ def parse_args():
     args.add_argument(
         "--S16_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        #default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
         help="CSV folder for images database.",
     )
     
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/training"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/training"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_database"),
         help="Folder contians database images.",
     )
 
@@ -58,7 +60,8 @@ def parse_args():
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_test"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
@@ -75,7 +78,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=200)
+    args.add_argument("--batch_size", type=int, default=500)
    
     args.add_argument(
         "--num_workers",
@@ -280,4 +283,5 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    #out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast_open_set/{args.test_city}_on_{args.database_city}_database.csv',index=False)
