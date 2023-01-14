@@ -1,0 +1,36 @@
+2022-12-08 05:59:56,411 - ImageDownloader - INFO - Downloading images per Milan
+2022-12-08 06:00:12,461 - ImageDownloader - INFO - Read dataset
+2022-12-08 06:01:51,420 - ImageDownloader - INFO - Milan : Sucesfully downloaded 3668/3823 images (0.959)
+2022-12-08 09:27:10,239 - ImageDownloader - INFO - Downloading images per Los_Angeles
+2022-12-08 09:27:26,869 - ImageDownloader - INFO - Read dataset
+2022-12-08 09:29:05,751 - ImageDownloader - INFO - Los_Angeles : Sucesfully downloaded 3803/3915 images (0.971)
+2022-12-08 10:02:44,421 - ImageDownloader - INFO - Downloading images per Edinburgh
+2022-12-08 10:03:01,089 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:04:12,877 - ImageDownloader - INFO - Edinburgh : Sucesfully downloaded 3309/3310 images (1.000)
+2022-12-08 10:19:02,891 - ImageDownloader - INFO - Downloading images per Beijing
+2022-12-08 10:19:19,353 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:20:55,709 - ImageDownloader - INFO - Beijing : Sucesfully downloaded 3453/3455 images (0.999)
+2022-12-08 10:39:22,488 - ImageDownloader - INFO - Downloading images per Mumbai
+2022-12-08 10:39:38,775 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:39:57,276 - ImageDownloader - INFO - Mumbai : Sucesfully downloaded 454/454 images (1.000)
+2022-12-08 10:41:18,390 - ImageDownloader - INFO - Downloading images per Mumbai
+2022-12-08 10:41:34,549 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:41:56,391 - ImageDownloader - INFO - Mumbai : Sucesfully downloaded 781/781 images (1.000)
+2022-12-08 10:49:23,400 - ImageDownloader - INFO - Downloading images per St_Petersburg
+2022-12-08 10:49:39,634 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:51:01,665 - ImageDownloader - INFO - St_Petersburg : Sucesfully downloaded 2742/2745 images (0.999)
+2022-12-08 10:52:02,559 - ImageDownloader - INFO - Downloading images per St_Petersburg
+2022-12-08 10:52:18,587 - ImageDownloader - INFO - Read dataset
+2022-12-08 10:53:31,350 - ImageDownloader - WARNING - To many requests, sleep for 60s... 303173234658373 : https://graph.mapillary.com/303173234658373?fields=thumb_1024_url
+2022-12-08 10:53:31,456 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/303173234658373?fields=thumb_1024_url
+2022-12-08 10:53:47,669 - ImageDownloader - INFO - St_Petersburg : Sucesfully downloaded 1838/1842 images (0.998)
+2022-12-09 05:00:05,107 - ImageDownloader - INFO - Downloading images per St_Petersburg
+2022-12-09 05:00:21,492 - ImageDownloader - INFO - Read dataset
+2022-12-09 05:01:30,843 - ImageDownloader - INFO - St_Petersburg : Sucesfully downloaded 2743/2745 images (0.999)
+2023-01-13 11:30:08,770 - ImageDownloader - INFO - Downloading images per Berlin
+2023-01-13 11:30:29,432 - ImageDownloader - INFO - Read dataset
+2023-01-13 11:31:08,846 - ImageDownloader - ERROR - Could not dowonload Image : http://farm9.staticflickr.com/8311/8027962241_5b4c619894.jpg
+2023-01-13 11:32:07,915 - ImageDownloader - INFO - Berlin : Sucesfully downloaded 2855/4700 images (0.607)
+2023-01-13 11:32:07,917 - ImageDownloader - INFO - Downloading images per Munich
+2023-01-13 11:32:28,842 - ImageDownloader - INFO - Read dataset
+2023-01-13 11:33:53,972 - ImageDownloader - INFO - Munich : Sucesfully downloaded 3359/3360 images (1.000)

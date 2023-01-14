@@ -321,32 +321,32 @@ def parse_args():
         "--output",
         type=Path,
         default=Path(
-            "/data/omran/cities_data/dataset/open_set"),
+            "/data/omran/cities_data/dataset/cities/new_batch_cities"),
         help="Output directory where images are stored",
     )
     args.add_argument(
         "--input_cities",
         type=Path,
         default=Path(
-            "/data/omran/cities_data/dataset/cities.csv"),
+            "/data/omran/siamese_cities/dataset_meta/cities.csv"),
     )
 
     args.add_argument(
         "--url_Flickr",
         type=Path,
-        default=Path("Flickr.csv"),
+        default=Path("/data/omran/cities_data/dataset/Flickr.csv"),
     )
     args.add_argument(
         "--url_Splash",
         type=Path,
 
-        default=Path("Splash.csv"),
+        default=Path("/data/omran/cities_data/dataset/Splash.csv"),
     )
     args.add_argument(
         "--url_Mapillary",
         type=Path,
 
-        default=Path("Mapillary.csv"),
+        default=Path("/data/omran/cities_data/dataset/Mapillary.csv"),
     )
     args.add_argument(
         "--size",
@@ -357,7 +357,7 @@ def parse_args():
     args.add_argument(
         "--max_img",
         type=int,
-        default=500,
+        default=2500,
         help="Maximum number of images per city",
     )
     args.add_argument(

@@ -18,7 +18,8 @@ import math
 #python3 analysis_results.py --test_city New_york --database_city New_york
 #python3 analysis_results.py --test_city Shanghai --database_city Shanghai
 #python3 analysis_results.py --test_city Tokyo --database_city Tokyo
-#python3 analysis_results.py --test_city Moscow --database_city Moscow
+#python3 analysis_results.py --test_city Moscow --database_city Moscow #St_Petersburg
+#python3 analysis_results.py --test_city Moscow --database_city St_Petersburg 
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -27,21 +28,22 @@ def parse_args():
     args.add_argument(
         "--database_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/training"), 
+        #default=Path("/data/omran/cities_data/dataset/cities/csv_meta/training"), 
         help="CSV folder for images database.",
     )
     
     args.add_argument(
         "--image_csv_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/csv_meta/test"),
+        #default=Path("/data/omran/cities_data/dataset/cities/csv_meta/test"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/sigmoid_filtered_datast"), 
+        #default=Path("/data/omran/cities_data/results/dataset_15_CityPretrainImgNetVippTraining"), 
+        default=Path("/data/omran/cities_data/results/dataset_15_CityPretrainImgNet"),
         help="Results CSVs folder.",
     )
 
@@ -50,14 +52,14 @@ def parse_args():
         "--outlist_dir",
         type=Path,
         #default=Path("/data/omran/cities_data/dataset/cities/out_list_test"), 
-        default=Path("/data/omran/cities_data/dataset/cities/out_list_Vipp"), 
+        #default=Path("/data/omran/cities_data/dataset/cities/out_list_Vipp"), 
         help="Results CSVs folder.",
     )
 
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/test"), 
+        #default=Path("/data/omran/cities_data/dataset/cities/test"), 
         help="Results CSVs folder.",
     )
 
@@ -125,7 +127,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    logging.info(f"Analysis results Test {args.test_city} city on {args.database_city} database")
+    #logging.info(f"Analysis results Test {args.test_city} city on {args.database_city} database")
 
     # Read results 
     df = pd.read_csv(f'{args.results_dir}/{args.test_city}_on_{args.database_city}_database.csv')
@@ -187,16 +189,17 @@ if __name__ == '__main__':
     #same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c']))
 
     print((f"Analysis results Test {args.test_city} city on {args.database_city} database"))
-    print("--------------------------------------------------------------------")
+    #print("--------------------------------------------------------------------")
     print(f"Based on votes_sigmoid hard                              : {same_db_sig[0].size / len_images}")
-    print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
-    print(f"Based on votes_sigmoid > 0.5 and < 0.5                   : {same_thr / len_images}")
-    print("--------------------------------------------------------------------")
+    #print("--------------------------------------------------------------------")
+    #print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
+    #print(f"Based on votes_sigmoid > 0.5 and < 0.5                   : {same_thr / len_images}")
+    #print("--------------------------------------------------------------------")
     
    
 
     #print(f"Based on probablity_same_similarity all 365 Euclidean    : {same_db_prob[0].size / len_images}")
-    print(f"Based on probablity_same_similarity all 16 Cosine        : {same_db_prob[0].size /  len_images}")
+    #print(f"Based on probablity_same_similarity all 16 Cosine        : {same_db_prob[0].size /  len_images}")
 
     #print(f"Based on probablity_same_similarity S16 Euclidean        : {same_e_distance[0].size  / len_images}")
     #print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")

@@ -14,6 +14,7 @@ S16_categories = pd.read_excel(
 S16_categories = tuple(S16_categories)
 
 file_name_IO = '/data/omran/cities_data/places365_model/IO_places365.txt'
+
 with open(file_name_IO) as f:
     lines = f.readlines()
     labels_IO = []
@@ -67,7 +68,7 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 
     # vote for the indoor or outdoor
     io_image = np.mean(labels_IO[idx_365[:10]])
-    if io_image < 0.6:
+    if io_image < 0.95:
         in_out = 'indoor'
         satisfy = False
     else:
@@ -98,13 +99,18 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 #folder_in_images = '/data/omran/cities_data/dataset/cities/training'
 #folder_out_images= '/data/omran/cities_data/dataset/filtered/training'
 
-meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/open_set'
-folder_in_images = '/data/omran/cities_data/dataset/open_set'
-folder_out_images= '/data/omran/cities_data/dataset/filtered/open_set'
+#meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/open_set'
+#folder_in_images = '/data/omran/cities_data/dataset/open_set'
+#folder_out_images= '/data/omran/cities_data/dataset/filtered/open_set'
+
+meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/new_batch_cities'
+
+folder_in_images = '/data/omran/cities_data/dataset/cities/new_batch_cities/Berlin_Munich'
+folder_out_images= '/data/omran/cities_data/dataset/filtered/new_batch_cities'
 
     
-for city in os.listdir(meta_folder_path):
-#for city in ['Sydney.csv']:
+#for city in os.listdir(meta_folder_path):
+for city in ['Berlin.csv','Munich.csv']:
 
 
     df = pd.read_csv(join(meta_folder_path, city))

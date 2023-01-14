@@ -25,21 +25,39 @@ def parse_args():
     args.add_argument(
         "--checkpoint_sigmoid",
         type=Path,
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/NoVippTraing_CityPretrain_NoFreezeBackbone/221216-0930/ckpts/epoch_24.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221222-0949/ckpts/epoch_6.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced/230108-0853/ckpts/epoch_8.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/ckpts/epock_16.ckpt"),        
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
+        
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),        
+
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
         "--hparams_sigmoid",
         type=Path,
-          default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344//tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344//tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/NoVippTraing_CityPretrain_NoFreezeBackbone/221216-0930/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221222-0949/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced/230108-0853/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
+
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
+
+
+
         help="Path to hparams file (*.yaml) generated during training",
     )
 
     args.add_argument(
         "--S16_csv",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
-        default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
+        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        #default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
         help="CSV folder for images database.",
     )
     
@@ -78,7 +96,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=500)
+    args.add_argument("--batch_size", type=int, default=40)
    
     args.add_argument(
         "--num_workers",
@@ -284,4 +302,4 @@ if __name__ == '__main__':
 
     out_db.reset_index()
     #out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)
-    out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast_open_set/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/dumy_OpenSet/{args.test_city}_on_{args.database_city}_database.csv',index=False)

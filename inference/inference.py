@@ -14,8 +14,12 @@ from tqdm import tqdm
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
-# export CUDA_VISIBLE_DEVICES=4,5,6,7
+#### import the dataset class used in training #### 
 
+from training.train_sigmoid_vipp_balance import SiameseNetworkDataset as SiameseNetworkDataset
+
+# export CUDA_VISIBLE_DEVICES=4,5,6,7
+# python3 inference.py --gpu 
 
 def parse_args():
     args = ArgumentParser()
@@ -27,8 +31,16 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/ckpts/epoch_621.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_freezeBackbone/221029-0428/ckpts/epoch_568.ckpt"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/ckpts/epoch_5.ckpt"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
-        
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/ckpts/epock_119.ckpt"),
+
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221222-0949/ckpts/epoch_6.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced/230108-0853/ckpts/epoch_8.ckpt"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/ckpts/epock_16.ckpt"),        
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
+
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),        
+
+ 
         help="Checkpoint to already trained model (*.ckpt)",
     )
     args.add_argument(
@@ -38,7 +50,14 @@ def parse_args():
         # default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_noFlatren/220915-0730/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_128_sigmoid_acc_pretrain_ImgNet/220916-0358/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_Nonlinearty_noVIPP/221117-1141/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344//tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/resnet101_64_sigmoid_VIPP_Freeze_Filtered_No_Similarity/221130-1344/tb_logs/version_0/hparams.yaml"),
+        
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221222-0949/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced/230108-0853/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
+        
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
 
         help="Path to hparams file (*.yaml) generated during training",
     )
@@ -74,18 +93,34 @@ def parse_args():
     args.add_argument(
         "--image_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/cities/test"),
+        #default=Path("/data/omran/cities_data/dataset/cities/test"),
         #default=Path("/data/omran/cities_data/dataset/open_set"),
-        #default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/test"),
         help="Folder containing test set images.",
     )
+    
+    args.add_argument(
+        "--S16_csv",
+        type=Path,
+        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        #default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
+        help="CSV folder for images database.",
+    )
     # environment
+    
+    args.add_argument(
+        "--vipp_database",
+        type=Path,
+        default=Path("/data/omran/cities_data/dataset/Vipp_classes.csv"),
+        #default=Path("/data/omran/cities_data/dataset/Vipp_classes_open_set.csv"),
+        help="Folder containing CSV files meta data for all images.",
+    )
     args.add_argument(
         "--gpu",
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=768)
+    args.add_argument("--batch_size", type=int, default=20) #768
     args.add_argument(
         "--num_workers",
         type=int,
@@ -95,9 +130,9 @@ def parse_args():
     return args.parse_args()
 
 
-class SiameseNetworkDataset(Dataset):
+class SiameseNetworkDataset_basic(Dataset):
 
-    def __init__(self, imageFolderDataset, transform=None, num_pairs=25600):
+    def __init__(self, imageFolderDataset, transform=None, num_pairs=51200):
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         self.num_pairs = num_pairs
@@ -157,8 +192,9 @@ def test_dataloader(image_dir, batch_size, num_workers):
 
     DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir)
 
-    dataset = SiameseNetworkDataset(
-        imageFolderDataset=DatasetFolder_test, transform=tfm_test)
+
+    dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_test, transform=tfm_test,database_csv_File=args.S16_csv,database_vipp_file=args.vipp_database, similarity_training=False, num_pairs=25600)
+
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
@@ -208,8 +244,9 @@ if __name__ == '__main__':
         y_true = []
         y_pred = []
 
-        for im1, im2, target, city_1, city_2 in tqdm(test_dataloader):
-
+        #for im1, im2, target, city_1, city_2 in tqdm(test_dataloader):
+        
+        for im1, im2, target, _ in tqdm(test_dataloader):    
             if args.gpu:
                 im1 = im1.cuda()
                 im2 = im2.cuda()
