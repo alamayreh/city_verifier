@@ -1,5 +1,5 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/city_classifier/ImageNetPretrain
+out_dir: /data/omran/cities_data/models/city_classifier/ImageNet_15_Berlin_Munich
 model_params:
   arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64

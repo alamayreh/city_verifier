@@ -110,7 +110,7 @@ folder_out_images= '/data/omran/cities_data/dataset/filtered/new_batch_cities'
 
     
 #for city in os.listdir(meta_folder_path):
-for city in ['Berlin.csv','Munich.csv']:
+for city in ['Berlin.csv']:
 
 
     df = pd.read_csv(join(meta_folder_path, city))

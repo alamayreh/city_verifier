@@ -33,6 +33,7 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
         
         default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),        
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/ckpts/epoch_333.ckpt"),        
 
         help="Checkpoint to already trained model (*.ckpt)",
     )
@@ -47,6 +48,7 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
 
         default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/tb_logs/version_0/hparams.yaml"),
 
 
 
@@ -64,8 +66,8 @@ def parse_args():
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/filtered/training"),
-        default=Path("/data/omran/cities_data/dataset/filtered/open_set_database"),
+        default=Path("/data/omran/cities_data/dataset/filtered/validation"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_database"),
         help="Folder contians database images.",
     )
 
@@ -78,8 +80,8 @@ def parse_args():
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        #default=Path("/data/omran/cities_data/dataset/filtered/test"),
-        default=Path("/data/omran/cities_data/dataset/filtered/open_set_test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_test"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
@@ -302,4 +304,4 @@ if __name__ == '__main__':
 
     out_db.reset_index()
     #out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)
-    out_db.to_csv(f'/data/omran/cities_data/results/dumy_OpenSet/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/VippTraing_CityPretrainImageNe_NoFreezeBackbone_09121_validation/{args.test_city}_on_{args.database_city}_database.csv',index=False)

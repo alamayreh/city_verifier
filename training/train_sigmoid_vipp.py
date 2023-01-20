@@ -33,7 +33,8 @@ class SiameseNetworkDataset(Dataset):
         self.similarity_training = similarity_training
         self.database_csv = pd.read_csv(database_csv_File,usecols=['IMG_ID','S16']).set_index('IMG_ID')
         self.database_vipp = pd.read_csv(database_vipp_file,usecols=['IMG_ID','pred_10_classes']).set_index('IMG_ID')
-        self.vipp_classes = {"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7}   
+        #self.vipp_classes = {"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7}   
+        self.vipp_classes = {"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Tokyo":7}   
  
     def string_to_prob(self, string_prob):
 

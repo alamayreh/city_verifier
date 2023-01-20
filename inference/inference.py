@@ -16,7 +16,8 @@ from sklearn.metrics import accuracy_score
 
 #### import the dataset class used in training #### 
 
-from training.train_sigmoid_vipp_balance import SiameseNetworkDataset as SiameseNetworkDataset
+#from training.train_sigmoid_vipp_balance import SiameseNetworkDataset as SiameseNetworkDataset
+from training.train_sigmoid_vipp import SiameseNetworkDataset as SiameseNetworkDataset
 
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
 # python3 inference.py --gpu 
@@ -38,7 +39,8 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/ckpts/epock_16.ckpt"),        
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
 
-        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),        
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),    
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/ckpts/epoch_333.ckpt"),       
 
  
         help="Checkpoint to already trained model (*.ckpt)",
@@ -57,7 +59,10 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
         
-        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/tb_logs/version_0/hparams.yaml"),
+
+
 
         help="Path to hparams file (*.yaml) generated during training",
     )

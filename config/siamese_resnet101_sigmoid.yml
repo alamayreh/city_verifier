@@ -1,14 +1,14 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
+out_dir: /data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
 model_params:
   arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64
-  weights: '/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
+  weights: /data/omran/cities_data/models/city_classifier/ImageNet_15_Berlin_Munich/230115-0619/ckpts/epoch_27.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
   similarity_training: false 
   freezeBackbone : false
-  num_pairs : 16000 #65536 #10240
+  num_pairs : 65536 #65536 #10240
   batch_size: 160 #160 #2048 #160 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
-  val_check_interval: 100 #410 #16 #410 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  val_check_interval: 410 #410 #16 #410 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   
   margin: 1.0
   optim:

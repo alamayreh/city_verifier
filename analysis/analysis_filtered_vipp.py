@@ -41,7 +41,7 @@ def parse_args():
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/dumy_OpenSet"),
+        default=Path("/data/omran/cities_data/results/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich"),
         help="Results CSVs folder.",
     )
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    vipp_classes = {"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
+    vipp_classes = {"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
     print(f"Analysis results Test {args.test_city} city on {args.database_city} database, Criterion Top {Top} \n")
 
     # Read results 
