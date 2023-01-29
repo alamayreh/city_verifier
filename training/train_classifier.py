@@ -37,7 +37,10 @@ class SiameseNetwork(pl.LightningModule):
 
         # Load resnet from torchvision
         model = models.__dict__[self.hparams.arch](
-            weights='ResNet101_Weights.DEFAULT')
+            weights='ResNet50_Weights.DEFAULT')
+
+        #model = models.__dict__[self.hparams.arch](
+        #    weights='ResNet101_Weights.DEFAULT')
 
         nfeatures = model.fc.in_features
         model = torch.nn.Sequential(*list(model.children())[:-1])

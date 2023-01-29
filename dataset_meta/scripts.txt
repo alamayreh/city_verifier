@@ -3,5 +3,6 @@ for x in *"-"*; do
 done 
 
 
-shuf -n 1000 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/training/Berlin
-shuf -n 60 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/to_delete
+shuf -n 250 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/training/Berlin
+shuf -n 100 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/Vancouver
+shuf -n 100 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/Quebec

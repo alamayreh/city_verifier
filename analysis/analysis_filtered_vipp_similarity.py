@@ -11,12 +11,14 @@ import numpy as np
 #Rio_de_Janeiro
 
 # ("Moscow" "St_Petersburg" "London" "Edinburgh" "Shanghai" "Beijing" "Cairo" "Delhi" "New_york" "Los_Angeles" "Rio_de_Janeiro" "Sydney" "Roma" "Milan" "Tokyo") 
-#python3 analysis_filtered_vipp.py --test_city Los_Angeles --database_city New_york
-#python3 analysis_filtered_vipp.py --test_city Shanghai --database_city Shanghai
-#python3 analysis_filtered_vipp.py --test_city Tokyo --database_city Tokyo
-#python3 analysis_filtered_vipp.py --test_city Moscow --database_city Moscow
-#python3 analysis_filtered_vipp.py --test_city Edinburgh --database_city Edinburgh
-#python3 analysis_filtered_vipp.py --test_city St_Petersburg --database_city St_Petersburg
+#python3 analysis_filtered_vipp_similarity.py --test_city Los_Angeles --database_city New_york
+#python3 analysis_filtered_vipp_similarity.py --test_city Shanghai --database_city Shanghai
+#python3 analysis_filtered_vipp_similarity.py --test_city Tokyo --database_city Tokyo
+#python3 analysis_filtered_vipp_similarity.py --test_city Moscow --database_city Moscow
+#python3 analysis_filtered_vipp_similarity.py --test_city Edinburgh --database_city Edinburgh
+#python3 analysis_filtered_vipp_similarity.py --test_city St_Petersburg --database_city St_Petersburg
+#python3 analysis_filtered_vipp_similarity.py --test_city Milan --database_city Milan
+#python3 analysis_filtered_vipp_similarity.py --test_city New_york --database_city   New_york
 #export CUDA_VISIBLE_DEVICES=4
 
 def parse_args():
@@ -26,7 +28,6 @@ def parse_args():
         "--S16_database",
         type=Path,
         default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
-        #default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
         help="CSV folder for images database.",
     )
     
@@ -34,14 +35,13 @@ def parse_args():
         "--vipp_database",
         type=Path,
         default=Path("/data/omran/cities_data/dataset/Vipp_classes.csv"),
-        #default=Path("/data/omran/cities_data/dataset/Vipp_classes_open_set.csv"),
         help="Folder containing CSV files meta data for all images.",
     )
 
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/ResNet50_VippTraing_CityPretrainImageNe_NoFreezeBackbone/"),
+        default=Path("/data/omran/cities_data/results/VippTraing_CityPretrainImageNe_NoFreezeBackbone_09121"),
         help="Results CSVs folder.",
     )
 
@@ -90,6 +90,30 @@ def distance_cos(p_base,p_test):
 
     return (1 - cDistance)  
 
+def similar_images(p_base,p_test):
+
+    test_prob = String_to_list(p_base)
+    base_prob = String_to_list(p_test)
+
+    #a_list = [10, 11, 14, 23, 9, 3, 35, 22]
+
+    max_value_test = max(test_prob)
+    max_index_test = test_prob.index(max_value_test)
+
+    N = 1 # try to change to 1  
+    res = sorted(range(len(base_prob)), key = lambda sub: base_prob[sub])[-N:]
+
+    if (max_index_test in res ):
+        out = True
+    else:
+        out = False    
+
+    #cDistance =  spatial.distance.cosine(base_prob, test_prob)
+    # 0 are similar, 1 are diff 
+
+    return out
+
+
 def add_jpeg_suffix(in_string):
     return (in_string + '.jpeg')
 
@@ -107,53 +131,55 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    vipp_classes = {"Vancouver":6,"Quebec":6,"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
+    # Define classes 
+    #vipp_classes = {"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
+    vipp_classes = {"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Los_Angeles":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7,"Amman":58,"Istanbul":27,"Mexico_city":17,"Paris":3,"Singapore":36}    
     print(f"Analysis results Test {args.test_city} city on {args.database_city} database, Criterion Top {Top} \n")
 
-    # Read results 
+    # Read results from the verifier 
     df = pd.read_csv(f'{args.results_dir}/{args.test_city}_on_{args.database_city}_database.csv',usecols=['IMG_ID_test','IMG_ID_data_base','sigmoid_output'])
 
-    # Read similarity  
+    # Read similarity and Vipp class
     db_16   =  pd.read_csv(args.S16_database).set_index('IMG_ID')
     db_vipp =  pd.read_csv(args.vipp_database).set_index('IMG_ID')
 
-    # Remove images from the test set, if the classifier does not recognize the country of the test city.
+    
+    #print(db_16.head())
+
+    # Get the number of images from the test city 
     img_test_list = df["IMG_ID_test"].unique()
     len_images = len(img_test_list)
     print(f"Number of input images from the test city {args.test_city}      : {len_images}" )
 
-    #out_list = [i for i in img_test_list if vipp_classes[args.test_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)]
-    #df = df[~df['IMG_ID_test'].isin(out_list)]
-    #print(f"Number of accepted images from the test city {args.test_city}   : { df['IMG_ID_test'].nunique()}" )
-
-    # Remove images from the test set, if the database city is not in on of the top 3 of the classifier output.
+    # Remove images from the test set, if the database city is not in one of the top 3 of the classifier output. 
     img_test_list = df["IMG_ID_test"].unique()
-    out_list_database = [i for i in img_test_list if vipp_classes[args.database_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)]
-   
+    out_list_database = [i for i in img_test_list if vipp_classes[args.database_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)] 
     df = df[~df['IMG_ID_test'].isin(out_list_database)]
-
     print(f"Number of accepted images from the test city {args.test_city} that recognized as {args.database_city} : { df['IMG_ID_test'].nunique()}" )
-    #print(df.head())
 
+    # number of images in database 
     number_voters_per_image =  df['IMG_ID_data_base'].nunique()
-    print(df.shape)
-    df.drop(df[df['IMG_ID_test'] == df['IMG_ID_data_base']].index, inplace = True)
-    print(df.shape)
+    print(f"Number of voters from database city {args.database_city} per image  : {number_voters_per_image}\n" )
 
+    #print(df.shape)
     if(number_voters_per_image!=0):
+        # Remove images from the database set, if the S16 class of the test images is not in one of the top 3 of the database image. 
+        df['similar_images'] = df.apply(lambda x: similar_images(db_16.loc[x.IMG_ID_test].S16, db_16.loc[x.IMG_ID_data_base].S16), axis=1)
+        df.query('similar_images == True', inplace=True)
+
         df['cDistance'] = df.apply(lambda x: distance_cos(db_16.loc[x.IMG_ID_test].S16, db_16.loc[x.IMG_ID_data_base].S16), axis=1)
         df['probablity_same_c'] = df.apply(lambda x:  (1 - x.sigmoid_output) * ((x.cDistance)), axis=1)
         df['probablity_diff_c'] = df.apply(lambda x:    (  x.sigmoid_output) * ((x.cDistance)), axis=1)
 
-
-    #df.query('cDistance >= 0.5', inplace=True)
     #print(df.head())
-    print(f"Number of voters from database city {args.database_city} per image  : {number_voters_per_image}\n" )
+    #print(df.shape)
+    #df.query('similar_images == True', inplace=True)
+    #print(df.shape)
+
 
     #print(df.head())
     df.drop(['IMG_ID_data_base'], axis=1,inplace=True)
 
-    
     thr = 0.6
 
     df["votes_sigmoid_05"] = (np.where(df['sigmoid_output'] > 0.5,0,1))

@@ -38,10 +38,10 @@ def convert_to_S16(input_prob,scene_matrix,IMG_ID,city ):
 
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/validation"
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/open_set"
-folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/test_backup//"
+folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/new_batch_cities"
 
-for i in os.listdir(folder_path):
-#for i in ['Berlin.csv','Munich.csv']:
+#for i in os.listdir(folder_path):
+for i in ['Quebec.csv','Vancouver.csv']:
 
 
     db           =  pd.read_csv(join(folder_path, i))

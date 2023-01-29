@@ -68,7 +68,7 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 
     # vote for the indoor or outdoor
     io_image = np.mean(labels_IO[idx_365[:10]])
-    if io_image < 0.95:
+    if io_image < 0.98:
         in_out = 'indoor'
         satisfy = False
     else:
@@ -105,12 +105,12 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 
 meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/new_batch_cities'
 
-folder_in_images = '/data/omran/cities_data/dataset/cities/new_batch_cities/Berlin_Munich'
+folder_in_images = '/data/omran/cities_data/dataset/cities/new_batch_cities/'
 folder_out_images= '/data/omran/cities_data/dataset/filtered/new_batch_cities'
 
     
 #for city in os.listdir(meta_folder_path):
-for city in ['Berlin.csv']:
+for city in ['Vancouver.csv']:
 
 
     df = pd.read_csv(join(meta_folder_path, city))

@@ -34,3 +34,9 @@
 2023-01-13 11:32:07,917 - ImageDownloader - INFO - Downloading images per Munich
 2023-01-13 11:32:28,842 - ImageDownloader - INFO - Read dataset
 2023-01-13 11:33:53,972 - ImageDownloader - INFO - Munich : Sucesfully downloaded 3359/3360 images (1.000)
+2023-01-22 11:38:16,871 - ImageDownloader - INFO - Downloading images per Vancouver
+2023-01-22 11:38:33,790 - ImageDownloader - INFO - Read dataset
+2023-01-22 11:39:42,550 - ImageDownloader - INFO - Vancouver : Sucesfully downloaded 2664/2666 images (0.999)
+2023-01-22 11:39:42,553 - ImageDownloader - INFO - Downloading images per Quebec
+2023-01-22 11:40:02,599 - ImageDownloader - INFO - Read dataset
+2023-01-22 11:40:26,379 - ImageDownloader - INFO - Quebec : Sucesfully downloaded 1153/1160 images (0.994)
