@@ -33,7 +33,8 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
         
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),        
-        default=Path("/data/omran/cities_data/models/Filtered_15/resnet50/VippTraing_CityPretrainImageNe_NoFreezeBackbone/230123-0639/epoch_18.ckpt"),        
+        default=Path("/data/omran/cities_data/models/dataset_10k/resnet50/VippTraing_CityPretrainImageNe_NoFreezeBackbone/230203-1158/epoch_25.ckpt"),        
+        #default=Path("/data/omran/cities_data/models/dataset_10k/resnet101/VippTraing_CityPretrainVIPP_NoFreezeBackbone/epoch_399.ckpt"),        
 
         help="Checkpoint to already trained model (*.ckpt)",
     )
@@ -47,8 +48,8 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_VippPretrain_NoFreezeBackbone_balanced_50/230109-0849/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
 
-        default=Path("/data/omran/cities_data/models/Filtered_15/resnet50/VippTraing_CityPretrainImageNe_NoFreezeBackbone/230123-0639/tb_logs/version_0/hparams.yaml"),
-        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921//tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/dataset_10k/resnet50/VippTraing_CityPretrainImageNe_NoFreezeBackbone/230203-1158/tb_logs/version_0/hparams.yaml"),
 
 
 
@@ -58,15 +59,14 @@ def parse_args():
     args.add_argument(
         "--S16_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        default=Path("/data/omran/cities_data/dataset/S16_database_10k.csv"), 
         help="CSV folder for images database.",
     )
     
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/training"),
-        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_database"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
         help="Folder contians database images.",
     )
 
@@ -79,8 +79,7 @@ def parse_args():
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/test"),
-        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
@@ -97,7 +96,7 @@ def parse_args():
         default='--gpu',
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=65)
+    args.add_argument("--batch_size", type=int, default=65) #40
    
     args.add_argument(
         "--num_workers",
@@ -302,5 +301,4 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    #out_db.to_csv(f'/data/omran/cities_data/results/sigmoid_filtered_datast/{args.test_city}_on_{args.database_city}_database.csv',index=False)
-    out_db.to_csv(f'/data/omran/cities_data/results/ResNet50_VippTraing_CityPretrainImageNe_NoFreezeBackbone/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/dataset_10k/ResNet50_ImageNetT_VippTraining_test_100_restricted/{args.test_city}_on_{args.database_city}_database.csv',index=False)

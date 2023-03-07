@@ -89,8 +89,10 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 
     if(satisfy):
         # do the copy 
-
-        shutil.copyfile(join(in_images_city,IMG_ID),join(out_images_city,IMG_ID))
+        try:
+            shutil.copyfile(join(in_images_city,IMG_ID),join(out_images_city,IMG_ID))
+        except:
+            return 0    
 
     return 0
 
@@ -99,18 +101,17 @@ def filter_and_copy(IMG_ID, Prob_365, S16,in_images_city,out_images_city):
 #folder_in_images = '/data/omran/cities_data/dataset/cities/training'
 #folder_out_images= '/data/omran/cities_data/dataset/filtered/training'
 
-#meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/open_set'
-#folder_in_images = '/data/omran/cities_data/dataset/open_set'
-#folder_out_images= '/data/omran/cities_data/dataset/filtered/open_set'
+#meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/dataset_10k'
+#folder_in_images = '/data/omran/cities_data/dataset/filtered/dataset_10k/test'
+#folder_out_images= '/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted'
 
-meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/new_batch_cities'
-
-folder_in_images = '/data/omran/cities_data/dataset/cities/new_batch_cities/'
-folder_out_images= '/data/omran/cities_data/dataset/filtered/new_batch_cities'
+meta_folder_path = '/data/omran/cities_data/dataset/cities/csv_meta/open_set'
+folder_in_images = '/data/omran/cities_data/dataset/filtered/open_set_temp'
+folder_out_images= '/data/omran/cities_data/dataset/filtered/open_set_restricted'
 
     
-#for city in os.listdir(meta_folder_path):
-for city in ['Vancouver.csv']:
+for city in os.listdir(meta_folder_path):
+#for city in ['Venice.csv','Florence.csv']:
 
 
     df = pd.read_csv(join(meta_folder_path, city))
@@ -122,8 +123,9 @@ for city in ['Vancouver.csv']:
     print(out_images_city)
     
     #print(df.head())
+    
     df.apply(lambda x:  filter_and_copy(x.IMG_ID, x.Probabily_365, x.S16,in_images_city,out_images_city), axis=1)
-
+    
 
 #df = pd.read_csv(join(meta_folder_path, city))
 #input_image = df.query('IMG_ID == "2674294937.jpeg"').reset_index(drop=True)

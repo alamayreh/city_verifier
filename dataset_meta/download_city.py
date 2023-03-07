@@ -321,7 +321,7 @@ def parse_args():
         "--output",
         type=Path,
         default=Path(
-            "/data/omran/cities_data/dataset/cities/new_batch_cities"),
+            "/data/omran/cities_data/dataset/open_set"),
         help="Output directory where images are stored",
     )
     args.add_argument(
@@ -357,7 +357,7 @@ def parse_args():
     args.add_argument(
         "--max_img",
         type=int,
-        default=2500,
+        default=150000,
         help="Maximum number of images per city",
     )
     args.add_argument(

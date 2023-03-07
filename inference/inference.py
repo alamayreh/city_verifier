@@ -8,8 +8,8 @@ from PIL import Image
 from argparse import ArgumentParser
 from pathlib import Path
 from utils import *
-from training.train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
-from training.train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
+#from training.train_sigmoid import SiameseNetwork as SiameseNetwork_sigmoid
+#from training.train_contrastive import SiameseNetwork as SiameseNetwork_contrastive
 from tqdm import tqdm
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
@@ -18,6 +18,7 @@ from sklearn.metrics import accuracy_score
 
 #from training.train_sigmoid_vipp_balance import SiameseNetworkDataset as SiameseNetworkDataset
 from training.train_sigmoid_vipp import SiameseNetworkDataset as SiameseNetworkDataset
+from training.train_sigmoid_vipp import SiameseNetwork as SiameseNetwork_sigmoid
 
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
 # python3 inference.py --gpu 
@@ -40,7 +41,8 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/ckpts/epoch_28.ckpt"),        
 
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/ckpts/epoch_89.ckpt"),    
-        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/ckpts/epoch_333.ckpt"),       
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/ckpts/epoch_333.ckpt"), 
+        default=Path("/data/omran/cities_data/models/dataset_10k/resnet101/VippTraing_CityPretrainVIPP_NoFreezeBackbone/epoch_399.ckpt"),            
 
  
         help="Checkpoint to already trained model (*.ckpt)",
@@ -60,8 +62,8 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_NY_LOS_25/230111-1220/tb_logs/version_0/hparams.yaml"),
         
         #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone/221223-0921/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/tb_logs/version_0/hparams.yaml"),
-
+        #default=Path("/data/omran/cities_data/models/Filtered_15/VippTraing_CityPretrainImageNe_NoFreezeBackbone_Berlin_Munich/230115-1025/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/dataset_10k/resnet101/VippTraing_CityPretrainVIPP_NoFreezeBackbone/230212-0738/tb_logs/version_0/hparams.yaml"),
 
 
         help="Path to hparams file (*.yaml) generated during training",
@@ -100,14 +102,15 @@ def parse_args():
         type=Path,
         #default=Path("/data/omran/cities_data/dataset/cities/test"),
         #default=Path("/data/omran/cities_data/dataset/open_set"),
-        default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/test"),
+        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test"),
         help="Folder containing test set images.",
     )
     
     args.add_argument(
         "--S16_csv",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/S16_database.csv"), 
+        default=Path("/data/omran/cities_data/dataset/S16_database_10k.csv"), 
         #default=Path("/data/omran/cities_data/dataset/S16_database_open_set.csv"), 
         help="CSV folder for images database.",
     )
@@ -116,7 +119,7 @@ def parse_args():
     args.add_argument(
         "--vipp_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/Vipp_classes.csv"),
+        default=Path("/data/omran/cities_data/dataset/Vipp_classes_10k.csv"),
         #default=Path("/data/omran/cities_data/dataset/Vipp_classes_open_set.csv"),
         help="Folder containing CSV files meta data for all images.",
     )
@@ -125,7 +128,7 @@ def parse_args():
         action="store_true",
         help="Use GPU for inference if CUDA is available",
     )
-    args.add_argument("--batch_size", type=int, default=20) #768
+    args.add_argument("--batch_size", type=int, default=20) #32 #768
     args.add_argument(
         "--num_workers",
         type=int,
@@ -198,7 +201,7 @@ def test_dataloader(image_dir, batch_size, num_workers):
     DatasetFolder_test = torchvision.datasets.ImageFolder(image_dir)
 
 
-    dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_test, transform=tfm_test,database_csv_File=args.S16_csv,database_vipp_file=args.vipp_database, similarity_training=False, num_pairs=25600)
+    dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_test, transform=tfm_test,database_csv_File=args.S16_csv,database_vipp_file=args.vipp_database, similarity_training=False, num_pairs=64000)
 
 
     dataloader = torch.utils.data.DataLoader(

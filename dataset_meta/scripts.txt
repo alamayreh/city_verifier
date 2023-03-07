@@ -2,7 +2,9 @@ for x in *"-"*; do
   mv -- "$x" "${x/-/_}"
 done 
 
+tar cf dataset_10k.tar dataset_10k/
 
 shuf -n 250 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/training/Berlin
-shuf -n 100 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/Vancouver
-shuf -n 100 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/Quebec
+
+shuf -n 100 -e *.jpeg | xargs -i mv {} /data/omran/cities_data/dataset/filtered/open_set_test/Florence
+shuf -n 100 -e *.jpeg | xargs -i cp {} /data/omran/cities_data/dataset/filtered/dataset_10k/test_100/

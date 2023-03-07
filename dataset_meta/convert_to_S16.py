@@ -6,12 +6,25 @@ from os.path import isfile, join
 
 scene_matrix  =  (pd.read_excel("/data/omran/cities_data/places365_model/Scene_hierarchy.xlsx",index_col=None)).to_numpy()
 
-print(scene_matrix)
+#print(scene_matrix)
 
 def Probability_365(Probability_365):
 
     image_prob_str =((Probability_365)[1:])[:-1].split(' ')
+
+    
+    #image_prob = [0 if len(i) == 0 else i for i in image_prob_str]
+
     image_prob = [float(i) for i in image_prob_str]
+
+    #for i in image_prob_str:
+    #    print(len(i))
+    #image_prob = []
+    #for i in image_prob_str:
+    #    if(len(i) == 0):
+    #        image_prob.append(float(0))
+    #    else: 
+    #        image_prob.append(float(i) )
 
     #image_prob= [0 if i < 0.01 else i for i in image_prob]
 
@@ -29,8 +42,8 @@ def convert_to_S16(input_prob,scene_matrix,IMG_ID,city ):
     #s16 = Probability_16
     s16 = Probability_16 / np.linalg.norm(Probability_16, ord=1)
 
-    if (np.sum(s16[0:10]) > np.sum(s16[10:])):
-        print(f"We have got a problem here /data/omran/cities_data/dataset/cities/open_set/{city[:-4]}/{IMG_ID}")
+    #if (np.sum(s16[0:10]) > np.sum(s16[10:])):
+    #print(f"We have got a problem here /data/omran/cities_data/dataset/cities/open_set/{city[:-4]}/{IMG_ID}")
 
     return s16
 
@@ -38,13 +51,13 @@ def convert_to_S16(input_prob,scene_matrix,IMG_ID,city ):
 
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/validation"
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/open_set"
-folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/new_batch_cities"
+folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/dataset_10k"
 
 #for i in os.listdir(folder_path):
-for i in ['Quebec.csv','Vancouver.csv']:
+for i in ['Berlin.csv']:
 
 
-    db           =  pd.read_csv(join(folder_path, i))
+    db           =  pd.read_csv(join(folder_path, i),error_bad_lines=False)
 
     print(f'city {i}')
 

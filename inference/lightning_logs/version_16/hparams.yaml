@@ -1,0 +1,38 @@
+arch: resnet50
+batch_size: 16
+database_csv: /data/omran/cities_data/dataset/S16_database_10k.csv
+database_vipp: /data/omran/cities_data/dataset/Vipp_classes_10k.csv
+embedding_dim: 64
+imageFolderTest: /data/omran/cities_data/dataset/filtered/dataset_10k/validation
+imageFolderTrain: /data/omran/cities_data/dataset/filtered/dataset_10k/training
+imageFolderValid: /data/omran/cities_data/dataset/filtered/dataset_10k/validation
+margin: 1.0
+num_workers: 4
+number_cities: 10
+optim:
+  params:
+    lr: 0.01
+    momentum: 0.9
+scheduler:
+  params:
+    gamma: 0.5
+    milestones:
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+val_check_interval: 3125
+weights: !!python/object/apply:pathlib.PosixPath
+- /
+- data
+- omran
+- cities_data
+- models
+- city_classifier
+- dataset10k
+- resnet50
+- 230203-0739
+- ckpts
+- epoch_38.ckpt

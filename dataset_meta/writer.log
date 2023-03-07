@@ -40,3 +40,225 @@
 2023-01-22 11:39:42,553 - ImageDownloader - INFO - Downloading images per Quebec
 2023-01-22 11:40:02,599 - ImageDownloader - INFO - Read dataset
 2023-01-22 11:40:26,379 - ImageDownloader - INFO - Quebec : Sucesfully downloaded 1153/1160 images (0.994)
+2023-01-29 06:04:44,134 - ImageDownloader - INFO - Downloading images per NewYork
+2023-01-29 06:05:01,295 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:05:39,580 - ImageDownloader - INFO - Downloading images per NewYork
+2023-01-29 06:05:56,377 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:06:47,870 - ImageDownloader - INFO - Downloading images per NewYork
+2023-01-29 06:07:05,016 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:08:34,890 - ImageDownloader - INFO - NewYork : Sucesfully downloaded 2591/23972 images (0.108)
+2023-01-29 06:08:34,890 - ImageDownloader - INFO - Downloading images per LosAngeles
+2023-01-29 06:08:53,925 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:10:03,200 - ImageDownloader - INFO - LosAngeles : Sucesfully downloaded 2758/13171 images (0.209)
+2023-01-29 06:12:04,248 - ImageDownloader - INFO - Downloading images per NewYork
+2023-01-29 06:12:22,004 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:23:54,213 - ImageDownloader - INFO - NewYork : Sucesfully downloaded 16314/25873 images (0.631)
+2023-01-29 06:23:54,216 - ImageDownloader - INFO - Downloading images per LosAngeles
+2023-01-29 06:24:13,785 - ImageDownloader - INFO - Read dataset
+2023-01-29 06:31:58,316 - ImageDownloader - INFO - LosAngeles : Sucesfully downloaded 16723/16756 images (0.998)
+2023-01-30 06:17:17,754 - ImageDownloader - INFO - Downloading images per Berlin
+2023-01-30 06:17:35,222 - ImageDownloader - INFO - Read dataset
+2023-01-30 06:18:45,849 - ImageDownloader - WARNING - To many requests, sleep for 60s... 156037789886709 : https://graph.mapillary.com/156037789886709?fields=thumb_1024_url
+2023-01-30 06:18:45,922 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/156037789886709?fields=thumb_1024_url
+2023-01-30 06:19:10,449 - ImageDownloader - WARNING - To many requests, sleep for 60s... 503136968098410 : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:19:10,525 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:19:20,469 - ImageDownloader - WARNING - To many requests, sleep for 60s... 510460163906281 : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 06:19:20,552 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 06:20:12,289 - ImageDownloader - WARNING - To many requests, sleep for 60s... 798883807408171 : https://graph.mapillary.com/798883807408171?fields=thumb_1024_url
+2023-01-30 06:20:12,371 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/798883807408171?fields=thumb_1024_url
+2023-01-30 06:21:29,446 - ImageDownloader - WARNING - To many requests, sleep for 60s... 253170593254036 : https://graph.mapillary.com/253170593254036?fields=thumb_1024_url
+2023-01-30 06:21:29,529 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/253170593254036?fields=thumb_1024_url
+2023-01-30 06:21:51,179 - ImageDownloader - WARNING - To many requests, sleep for 60s... 581988979435838 : https://graph.mapillary.com/581988979435838?fields=thumb_1024_url
+2023-01-30 06:21:51,744 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/581988979435838?fields=thumb_1024_url
+2023-01-30 06:22:10,781 - ImageDownloader - WARNING - To many requests, sleep for 60s... 6038401122840361 : https://graph.mapillary.com/6038401122840361?fields=thumb_1024_url
+2023-01-30 06:22:10,864 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/6038401122840361?fields=thumb_1024_url
+2023-01-30 06:22:47,085 - ImageDownloader - WARNING - To many requests, sleep for 60s... 181595727180023 : https://graph.mapillary.com/181595727180023?fields=thumb_1024_url
+2023-01-30 06:22:47,162 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/181595727180023?fields=thumb_1024_url
+2023-01-30 06:22:52,751 - ImageDownloader - WARNING - To many requests, sleep for 60s... 1264580500672467 : https://graph.mapillary.com/1264580500672467?fields=thumb_1024_url
+2023-01-30 06:22:52,827 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/1264580500672467?fields=thumb_1024_url
+2023-01-30 06:23:10,481 - ImageDownloader - WARNING - To many requests, sleep for 60s... 798883807408171 : https://graph.mapillary.com/798883807408171?fields=thumb_1024_url
+2023-01-30 06:23:10,558 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/798883807408171?fields=thumb_1024_url
+2023-01-30 06:23:22,341 - ImageDownloader - WARNING - To many requests, sleep for 60s... 245007121014293 : https://graph.mapillary.com/245007121014293?fields=thumb_1024_url
+2023-01-30 06:23:22,422 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/245007121014293?fields=thumb_1024_url
+2023-01-30 06:23:27,277 - ImageDownloader - WARNING - To many requests, sleep for 60s... 380035823344745 : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 06:23:27,354 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 06:23:46,687 - ImageDownloader - WARNING - To many requests, sleep for 60s... 503136968098410 : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:23:46,760 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:23:50,436 - ImageDownloader - WARNING - To many requests, sleep for 60s... 869098854017327 : https://graph.mapillary.com/869098854017327?fields=thumb_1024_url
+2023-01-30 06:23:50,517 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/869098854017327?fields=thumb_1024_url
+2023-01-30 06:23:53,329 - ImageDownloader - WARNING - To many requests, sleep for 60s... 491782928937235 : https://graph.mapillary.com/491782928937235?fields=thumb_1024_url
+2023-01-30 06:23:53,402 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/491782928937235?fields=thumb_1024_url
+2023-01-30 06:25:16,749 - ImageDownloader - WARNING - To many requests, sleep for 60s... 3920578321374159 : https://graph.mapillary.com/3920578321374159?fields=thumb_1024_url
+2023-01-30 06:25:16,844 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/3920578321374159?fields=thumb_1024_url
+2023-01-30 06:25:25,001 - ImageDownloader - WARNING - To many requests, sleep for 60s... 2919708691632707 : https://graph.mapillary.com/2919708691632707?fields=thumb_1024_url
+2023-01-30 06:25:25,082 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/2919708691632707?fields=thumb_1024_url
+2023-01-30 06:25:49,165 - ImageDownloader - WARNING - To many requests, sleep for 60s... 166939702102146 : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 06:25:49,243 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 06:26:01,145 - ImageDownloader - WARNING - To many requests, sleep for 60s... 181595727180023 : https://graph.mapillary.com/181595727180023?fields=thumb_1024_url
+2023-01-30 06:26:01,214 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/181595727180023?fields=thumb_1024_url
+2023-01-30 06:26:38,217 - ImageDownloader - WARNING - To many requests, sleep for 60s... 4916681458449809 : https://graph.mapillary.com/4916681458449809?fields=thumb_1024_url
+2023-01-30 06:26:38,300 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/4916681458449809?fields=thumb_1024_url
+2023-01-30 06:27:08,997 - ImageDownloader - WARNING - To many requests, sleep for 60s... 380035823344745 : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 06:27:09,095 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 06:27:32,181 - ImageDownloader - WARNING - To many requests, sleep for 60s... 260113999133001 : https://graph.mapillary.com/260113999133001?fields=thumb_1024_url
+2023-01-30 06:27:32,251 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/260113999133001?fields=thumb_1024_url
+2023-01-30 06:27:39,513 - ImageDownloader - WARNING - To many requests, sleep for 60s... 510460163906281 : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 06:27:39,593 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 06:27:42,701 - ImageDownloader - WARNING - To many requests, sleep for 60s... 503136968098410 : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:27:42,792 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/503136968098410?fields=thumb_1024_url
+2023-01-30 06:29:25,428 - ImageDownloader - WARNING - To many requests, sleep for 60s... 4005665502874129 : https://graph.mapillary.com/4005665502874129?fields=thumb_1024_url
+2023-01-30 06:29:25,498 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/4005665502874129?fields=thumb_1024_url
+2023-01-30 06:29:28,433 - ImageDownloader - INFO - Berlin : Sucesfully downloaded 19359/23541 images (0.822)
+2023-01-30 07:10:49,258 - ImageDownloader - INFO - Downloading images per London
+2023-01-30 07:11:07,166 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:12:18,825 - ImageDownloader - WARNING - To many requests, sleep for 60s... 1217753032300055 : https://graph.mapillary.com/1217753032300055?fields=thumb_1024_url
+2023-01-30 07:12:18,902 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/1217753032300055?fields=thumb_1024_url
+2023-01-30 07:15:47,029 - ImageDownloader - WARNING - To many requests, sleep for 60s... 2967402856867884 : https://graph.mapillary.com/2967402856867884?fields=thumb_1024_url
+2023-01-30 07:15:47,102 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/2967402856867884?fields=thumb_1024_url
+2023-01-30 07:20:44,701 - ImageDownloader - WARNING - To many requests, sleep for 60s... 220539589486905 : https://graph.mapillary.com/220539589486905?fields=thumb_1024_url
+2023-01-30 07:20:44,789 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/220539589486905?fields=thumb_1024_url
+2023-01-30 07:21:48,917 - ImageDownloader - INFO - Downloading images per London
+2023-01-30 07:22:07,641 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:23:39,106 - ImageDownloader - INFO - Downloading images per Rome
+2023-01-30 07:24:09,464 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:26:10,530 - ImageDownloader - WARNING - Image could not be resized p092a4mu5Bk : https://images.unsplash.com/photo-1620600574068-f1b4d7648ddb
+2023-01-30 07:26:10,531 - ImageDownloader - ERROR - Could not dowonload Image : http://farm2.staticflickr.com/1223/5100777524_3aec29ee41.jpg
+2023-01-30 07:26:10,531 - ImageDownloader - ERROR - Could not dowonload Image : https://images.unsplash.com/photo-1519595652154-d25f168527d6
+2023-01-30 07:26:10,532 - ImageDownloader - ERROR - Could not dowonload Image : http://farm2.staticflickr.com/1268/742835884_1e249e6770.jpg
+2023-01-30 07:26:10,533 - ImageDownloader - WARNING - Image could not be resized F_n7G6BdbEQ : https://images.unsplash.com/photo-1619499108232-dd46fff706b5
+2023-01-30 07:26:10,534 - ImageDownloader - WARNING - Image could not be resized nlKFtadpueY : https://images.unsplash.com/photo-1605644590903-6591336f609a
+2023-01-30 07:26:10,537 - ImageDownloader - WARNING - Image could not be resized 6lWfOTq6vhg : https://images.unsplash.com/photo-1600425410306-7e7b742287d5
+2023-01-30 07:26:10,537 - ImageDownloader - WARNING - Image could not be resized E4VEYjn7MHM : https://images.unsplash.com/photo-1491156676545-0e28b373f020
+2023-01-30 07:26:24,235 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-30 07:26:52,014 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:26:55,456 - ImageDownloader - INFO - London : Sucesfully downloaded 22276/22353 images (0.997)
+2023-01-30 07:29:36,137 - ImageDownloader - INFO - Downloading images per Berlin
+2023-01-30 07:30:06,796 - ImageDownloader - INFO - Downloading images per London
+2023-01-30 07:30:07,634 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:30:40,867 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:30:45,684 - ImageDownloader - INFO - Downloading images per NewYork
+2023-01-30 07:31:22,204 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:31:56,089 - ImageDownloader - WARNING - To many requests, sleep for 60s... 879809605901101 : https://graph.mapillary.com/879809605901101?fields=thumb_1024_url
+2023-01-30 07:31:56,182 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/879809605901101?fields=thumb_1024_url
+2023-01-30 07:32:59,558 - ImageDownloader - WARNING - To many requests, sleep for 60s... 945396696253686 : https://graph.mapillary.com/945396696253686?fields=thumb_1024_url
+2023-01-30 07:32:59,672 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/945396696253686?fields=thumb_1024_url
+2023-01-30 07:33:08,222 - ImageDownloader - INFO - Rome : Sucesfully downloaded 13843/13880 images (0.997)
+2023-01-30 07:33:18,253 - ImageDownloader - WARNING - To many requests, sleep for 60s... 940994396442553 : https://graph.mapillary.com/940994396442553?fields=thumb_1024_url
+2023-01-30 07:33:19,543 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/940994396442553?fields=thumb_1024_url
+2023-01-30 07:34:09,189 - ImageDownloader - WARNING - To many requests, sleep for 60s... 220539589486905 : https://graph.mapillary.com/220539589486905?fields=thumb_1024_url
+2023-01-30 07:34:09,299 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/220539589486905?fields=thumb_1024_url
+2023-01-30 07:34:17,336 - ImageDownloader - INFO - Milan : Sucesfully downloaded 10030/10038 images (0.999)
+2023-01-30 07:34:23,633 - ImageDownloader - WARNING - To many requests, sleep for 60s... 309772323866005 : https://graph.mapillary.com/309772323866005?fields=thumb_1024_url
+2023-01-30 07:34:23,754 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/309772323866005?fields=thumb_1024_url
+2023-01-30 07:34:31,049 - ImageDownloader - WARNING - To many requests, sleep for 60s... 945396696253686 : https://graph.mapillary.com/945396696253686?fields=thumb_1024_url
+2023-01-30 07:34:31,234 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/945396696253686?fields=thumb_1024_url
+2023-01-30 07:34:46,469 - ImageDownloader - WARNING - To many requests, sleep for 60s... 1139443019903796 : https://graph.mapillary.com/1139443019903796?fields=thumb_1024_url
+2023-01-30 07:34:46,555 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/1139443019903796?fields=thumb_1024_url
+2023-01-30 07:35:25,362 - ImageDownloader - INFO - Downloading images per Paris
+2023-01-30 07:36:00,666 - ImageDownloader - INFO - Read dataset
+2023-01-30 07:36:04,290 - ImageDownloader - ERROR - 200826385071193 : https://graph.mapillary.com/200826385071193?fields=thumb_1024_url: 503
+2023-01-30 07:36:12,053 - ImageDownloader - WARNING - To many requests, sleep for 60s... 166939702102146 : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:36:12,172 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:36:33,713 - ImageDownloader - WARNING - To many requests, sleep for 60s... 648123156593816 : https://graph.mapillary.com/648123156593816?fields=thumb_1024_url
+2023-01-30 07:36:33,849 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/648123156593816?fields=thumb_1024_url
+2023-01-30 07:37:15,943 - ImageDownloader - WARNING - To many requests, sleep for 60s... 934540937370553 : https://graph.mapillary.com/934540937370553?fields=thumb_1024_url
+2023-01-30 07:37:16,100 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/934540937370553?fields=thumb_1024_url
+2023-01-30 07:37:57,357 - ImageDownloader - WARNING - To many requests, sleep for 60s... 879809605901101 : https://graph.mapillary.com/879809605901101?fields=thumb_1024_url
+2023-01-30 07:37:57,480 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/879809605901101?fields=thumb_1024_url
+2023-01-30 07:38:10,201 - ImageDownloader - WARNING - To many requests, sleep for 60s... 4005665502874129 : https://graph.mapillary.com/4005665502874129?fields=thumb_1024_url
+2023-01-30 07:38:10,324 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/4005665502874129?fields=thumb_1024_url
+2023-01-30 07:39:15,113 - ImageDownloader - WARNING - To many requests, sleep for 60s... 253170593254036 : https://graph.mapillary.com/253170593254036?fields=thumb_1024_url
+2023-01-30 07:39:15,243 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/253170593254036?fields=thumb_1024_url
+2023-01-30 07:40:13,930 - ImageDownloader - WARNING - To many requests, sleep for 60s... 708237440601143 : https://graph.mapillary.com/708237440601143?fields=thumb_1024_url
+2023-01-30 07:40:14,051 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/708237440601143?fields=thumb_1024_url
+2023-01-30 07:40:45,280 - ImageDownloader - WARNING - To many requests, sleep for 60s... 3759226457519016 : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:40:45,404 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:41:09,317 - ImageDownloader - WARNING - To many requests, sleep for 60s... 166939702102146 : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:41:09,420 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:41:10,773 - ImageDownloader - WARNING - To many requests, sleep for 60s... 166939702102146 : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:41:10,889 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/166939702102146?fields=thumb_1024_url
+2023-01-30 07:41:26,829 - ImageDownloader - WARNING - To many requests, sleep for 60s... 380035823344745 : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 07:41:26,971 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/380035823344745?fields=thumb_1024_url
+2023-01-30 07:41:52,901 - ImageDownloader - WARNING - To many requests, sleep for 60s... 2974791062805700 : https://graph.mapillary.com/2974791062805700?fields=thumb_1024_url
+2023-01-30 07:41:53,031 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/2974791062805700?fields=thumb_1024_url
+2023-01-30 07:42:38,453 - ImageDownloader - WARNING - To many requests, sleep for 60s... 156037789886709 : https://graph.mapillary.com/156037789886709?fields=thumb_1024_url
+2023-01-30 07:42:38,560 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/156037789886709?fields=thumb_1024_url
+2023-01-30 07:43:15,409 - ImageDownloader - WARNING - To many requests, sleep for 60s... 260113999133001 : https://graph.mapillary.com/260113999133001?fields=thumb_1024_url
+2023-01-30 07:43:15,537 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/260113999133001?fields=thumb_1024_url
+2023-01-30 07:44:13,013 - ImageDownloader - WARNING - To many requests, sleep for 60s... 281675840280700 : https://graph.mapillary.com/281675840280700?fields=thumb_1024_url
+2023-01-30 07:44:13,109 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/281675840280700?fields=thumb_1024_url
+2023-01-30 07:44:57,289 - ImageDownloader - WARNING - To many requests, sleep for 60s... 648123156593816 : https://graph.mapillary.com/648123156593816?fields=thumb_1024_url
+2023-01-30 07:44:57,425 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/648123156593816?fields=thumb_1024_url
+2023-01-30 07:44:59,697 - ImageDownloader - WARNING - To many requests, sleep for 60s... 3759226457519016 : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:44:59,812 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:46:11,881 - ImageDownloader - WARNING - To many requests, sleep for 60s... 311670457241734 : https://graph.mapillary.com/311670457241734?fields=thumb_1024_url
+2023-01-30 07:46:11,964 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/311670457241734?fields=thumb_1024_url
+2023-01-30 07:46:33,891 - ImageDownloader - WARNING - To many requests, sleep for 60s... 510460163906281 : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 07:46:33,994 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 07:46:36,269 - ImageDownloader - WARNING - To many requests, sleep for 60s... 510460163906281 : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 07:46:36,353 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/510460163906281?fields=thumb_1024_url
+2023-01-30 07:54:07,558 - ImageDownloader - WARNING - To many requests, sleep for 60s... 528481284986399 : https://graph.mapillary.com/528481284986399?fields=thumb_1024_url
+2023-01-30 07:54:07,785 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/528481284986399?fields=thumb_1024_url
+2023-01-30 07:54:37,132 - ImageDownloader - WARNING - To many requests, sleep for 60s... 3759226457519016 : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:54:37,242 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/3759226457519016?fields=thumb_1024_url
+2023-01-30 07:55:19,849 - ImageDownloader - WARNING - To many requests, sleep for 60s... 725932865268219 : https://graph.mapillary.com/725932865268219?fields=thumb_1024_url
+2023-01-30 07:55:20,180 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/725932865268219?fields=thumb_1024_url
+2023-01-30 08:01:57,283 - ImageDownloader - INFO - Berlin : Sucesfully downloaded 23457/23541 images (0.996)
+2023-01-30 08:03:26,754 - ImageDownloader - INFO - Paris : Sucesfully downloaded 25585/25635 images (0.998)
+2023-01-30 08:05:28,543 - ImageDownloader - INFO - London : Sucesfully downloaded 22292/22353 images (0.997)
+2023-01-30 08:08:32,827 - ImageDownloader - INFO - NewYork : Sucesfully downloaded 25807/25873 images (0.997)
+2023-01-30 11:58:25,064 - ImageDownloader - INFO - Downloading images per Tokyo
+2023-01-30 11:58:47,583 - ImageDownloader - INFO - Read dataset
+2023-01-30 12:06:03,243 - ImageDownloader - INFO - Tokyo : Sucesfully downloaded 14921/14961 images (0.997)
+2023-01-30 12:06:47,988 - ImageDownloader - INFO - Downloading images per Rome
+2023-01-30 12:07:10,378 - ImageDownloader - INFO - Read dataset
+2023-01-30 12:12:01,309 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-30 12:12:24,466 - ImageDownloader - INFO - Read dataset
+2023-01-30 12:16:56,332 - ImageDownloader - INFO - Rome : Sucesfully downloaded 13989/14039 images (0.996)
+2023-01-30 12:19:32,351 - ImageDownloader - INFO - Milan : Sucesfully downloaded 12838/12852 images (0.999)
+2023-01-30 12:20:33,645 - ImageDownloader - INFO - Downloading images per Barcelona
+2023-01-30 12:20:56,343 - ImageDownloader - INFO - Read dataset
+2023-01-30 12:28:10,500 - ImageDownloader - INFO - Barcelona : Sucesfully downloaded 15180/15236 images (0.996)
+2023-01-31 04:09:20,446 - ImageDownloader - INFO - Downloading images per Amsterdam
+2023-01-31 04:09:37,703 - ImageDownloader - INFO - Read dataset
+2023-01-31 04:16:31,586 - ImageDownloader - INFO - Amsterdam : Sucesfully downloaded 15026/15051 images (0.998)
+2023-01-31 04:23:38,951 - ImageDownloader - INFO - Downloading images per Amsterdam
+2023-01-31 04:23:56,760 - ImageDownloader - INFO - Read dataset
+2023-01-31 04:32:02,447 - ImageDownloader - INFO - Amsterdam : Sucesfully downloaded 15390/15426 images (0.998)
+2023-01-31 04:33:10,584 - ImageDownloader - INFO - Downloading images per Amsterdam
+2023-01-31 04:33:28,697 - ImageDownloader - INFO - Read dataset
+2023-01-31 04:36:13,535 - ImageDownloader - INFO - Downloading images per Barcelona
+2023-01-31 04:36:48,805 - ImageDownloader - INFO - Read dataset
+2023-01-31 04:43:19,742 - ImageDownloader - INFO - Amsterdam : Sucesfully downloaded 15395/15426 images (0.998)
+2023-01-31 04:45:36,939 - ImageDownloader - INFO - Barcelona : Sucesfully downloaded 15193/15236 images (0.997)
+2023-01-31 04:51:53,030 - ImageDownloader - INFO - Downloading images per Tokyo
+2023-01-31 04:52:11,529 - ImageDownloader - INFO - Read dataset
+2023-01-31 04:55:13,745 - ImageDownloader - WARNING - To many requests, sleep for 60s... 380219746617705 : https://graph.mapillary.com/380219746617705?fields=thumb_1024_url
+2023-01-31 04:55:13,816 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/380219746617705?fields=thumb_1024_url
+2023-01-31 04:57:12,665 - ImageDownloader - WARNING - To many requests, sleep for 60s... 380219746617705 : https://graph.mapillary.com/380219746617705?fields=thumb_1024_url
+2023-01-31 04:57:12,741 - ImageDownloader - ERROR - Could not dowonload Image : https://graph.mapillary.com/380219746617705?fields=thumb_1024_url
+2023-01-31 05:00:06,345 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-31 05:00:23,534 - ImageDownloader - INFO - Tokyo : Sucesfully downloaded 14916/14961 images (0.997)
+2023-01-31 05:00:25,999 - ImageDownloader - INFO - Read dataset
+2023-01-31 05:03:23,831 - ImageDownloader - INFO - Downloading images per LosAngeles
+2023-01-31 05:03:50,949 - ImageDownloader - INFO - Read dataset
+2023-01-31 05:06:16,791 - ImageDownloader - INFO - Milan : Sucesfully downloaded 10033/10038 images (1.000)
+2023-01-31 05:08:49,713 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-31 05:09:10,626 - ImageDownloader - INFO - Read dataset
+2023-01-31 05:12:47,321 - ImageDownloader - INFO - Downloading images per Rome
+2023-01-31 05:13:07,889 - ImageDownloader - INFO - Read dataset
+2023-01-31 05:15:50,530 - ImageDownloader - INFO - LosAngeles : Sucesfully downloaded 16725/16756 images (0.998)
+2023-01-31 05:16:25,873 - ImageDownloader - INFO - Milan : Sucesfully downloaded 10509/10520 images (0.999)
+2023-01-31 05:19:31,932 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-31 05:19:50,205 - ImageDownloader - INFO - Read dataset
+2023-01-31 05:21:33,567 - ImageDownloader - INFO - Rome : Sucesfully downloaded 13837/13884 images (0.997)
+2023-01-31 05:25:28,952 - ImageDownloader - INFO - Milan : Sucesfully downloaded 10774/10788 images (0.999)
+2023-01-31 06:08:42,704 - ImageDownloader - INFO - Downloading images per Milan
+2023-01-31 06:08:59,960 - ImageDownloader - INFO - Read dataset
+2023-01-31 06:14:39,338 - ImageDownloader - INFO - Milan : Sucesfully downloaded 10868/10875 images (0.999)
+2023-02-01 05:39:18,208 - ImageDownloader - INFO - Downloading images per Venice
+2023-02-01 05:39:47,488 - ImageDownloader - INFO - Read dataset
+2023-02-01 05:40:53,234 - ImageDownloader - INFO - Venice : Sucesfully downloaded 1375/1375 images (1.000)
+2023-02-01 05:40:53,236 - ImageDownloader - INFO - Downloading images per Florence
+2023-02-01 05:41:21,910 - ImageDownloader - INFO - Read dataset
+2023-02-01 05:42:45,299 - ImageDownloader - INFO - Florence : Sucesfully downloaded 1546/1546 images (1.000)

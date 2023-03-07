@@ -36,11 +36,11 @@ class SiameseNetwork(pl.LightningModule):
         logging.info("Build model")
 
         # Load resnet from torchvision
-        model = models.__dict__[self.hparams.arch](
-            weights='ResNet50_Weights.DEFAULT')
-
         #model = models.__dict__[self.hparams.arch](
-        #    weights='ResNet101_Weights.DEFAULT')
+        #    weights='ResNet18_Weights.DEFAULT')
+
+        model = models.__dict__[self.hparams.arch](
+            weights='ResNet18_Weights.DEFAULT')
 
         nfeatures = model.fc.in_features
         model = torch.nn.Sequential(*list(model.children())[:-1])
@@ -194,10 +194,6 @@ class SiameseNetwork(pl.LightningModule):
             pin_memory=True,
         )
 
-        #self.total_number_training_images = len(dataloader.dataset)
-        #logging.info(f"\nThe total number of samples : {self.total_number_training_images}")
-        #logging.info('#####################################################################')
-        #logging.info('#####################################################################')
         return dataloader
 
 
