@@ -1,9 +1,9 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/dataset_10k/resnet101/VippTraing_CityPretrainVIPP_NoFreezeBackbone #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
+out_dir: /data/omran/cities_data/models/dataset_10k/vit/pretrain_andrea #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
 model_params:
-  arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
+  #arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64
-  weights: /data/omran/cities_data/models/city_classifier/dataset10k/resnet101_GeoVIPP/230211-1245/epocl_1.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_10k/230203-0739/ckpts/epoch_38.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_ImageNet_15/230123-0409/ckpts/epoch_79.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
+  weights: /data/omran/cities_data/models/pretrain_vit/vit_16h_model.pt #/data/omran/cities_data/models/city_classifier/Resnet50_10k/230203-0739/ckpts/epoch_38.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_ImageNet_15/230123-0409/ckpts/epoch_79.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
   similarity_training: false 
   freezeBackbone : false
   num_pairs : 16384 #65536 #10240
@@ -31,10 +31,10 @@ model_params:
   database_csv:      /data/omran/cities_data/dataset/S16_database_10k.csv
   database_vipp :    /data/omran/cities_data/dataset/Vipp_classes_10k.csv
 
-  num_workers: 4 #6
+  num_workers: 8 #6
 # paramters for pytorch lightning trainer class
 trainer_params:
-  gpus: 1
+  gpus: 4
   max_epochs: 10000
   distributed_backend: dp #dp #null #ddp
   precision: 16

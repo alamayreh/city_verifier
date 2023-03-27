@@ -20,8 +20,7 @@ import os
 from os.path import isfile, join
 
 # export CUDA_VISIBLE_DEVICES=4,5,6,7
-# python3 train_sigmoid_similarity.py --config config/siamese_resnet101_sigmoid.yml
-# python3 train_sigmoid_vipp.py --config ~/siamese_cities/config/siamese_resnet101_sigmoid.yml
+# python3 train_vit_siamese.py --config ~/siamese_cities/config/siamese_vit.yml
 
 class SiameseNetworkDataset(Dataset):
 
@@ -165,7 +164,7 @@ class SiameseNetwork(pl.LightningModule):
         super().__init__()
 
         self.hparams = hparams
-        self.model,  self.embedding_one_net, self.embedding_two_net, self.sigmoid = self.__build_model()
+        self.model,  self.embedding, self.sigmoid = self.__build_model()
         self.class_weights = None
         self.total_number_training_images = 0 # just to print the total number of images only in the first loop
 
@@ -173,35 +172,37 @@ class SiameseNetwork(pl.LightningModule):
         logging.info("Build model")
 
         # Load resnet from torchvision
-        model = models.__dict__[self.hparams.arch](
-            weights='ResNet50_Weights.DEFAULT')
+        model = torchvision.models.vit_l_16(weights=torchvision.models.ViT_L_16_Weights.DEFAULT)
+        
+        # set the last layer to embedding dim
+        last_layer_features = model.heads.head.in_features
 
-        nfeatures = model.fc.in_features
-        model = torch.nn.Sequential(*list(model.children())[:-1])  
-        model.avgpool = torch.nn.AdaptiveAvgPool2d(1)
-        model.flatten = torch.nn.Flatten(start_dim=1)
+        model.heads.head = torch.nn.Linear(in_features=last_layer_features, out_features= self.hparams.embedding_dim, bias=True) 
 
-        # Basic embedding layers
-        #embedding_one_net = torch.nn.Linear(nfeatures, self.hparams.embedding_dim)
+        # print the last layer 
+        #print(list(model.children())[-1])
+        #print(model)
 
-        embedding_one_net = torch.nn.Sequential(
-            torch.nn.Linear(nfeatures, self.hparams.embedding_dim),
-            torch.nn.ReLU(inplace=True),
-        )
-
-        embedding_two_net = torch.nn.Sequential(
+        embedding = torch.nn.Sequential(
             torch.nn.Linear(self.hparams.embedding_dim *
-                            2, self.hparams.embedding_dim),
+                            2, self.hparams.embedding_dim, bias=True),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(self.hparams.embedding_dim, 1),
         )
 
         if self.hparams.weights:
-            logging.info("Load weights from pre-trained (VIPP mdoel)")
-            model = load_weights_CountryEstimation_model(
-                model, self.hparams.weights
-            )
+            logging.info("Load weights from pre-trained (ViT andrea)")
+            sd = torch.load(self.hparams.weights)
+            print(f'Loaded best model obtained after {sd["epoch"]} epochs with validation accuracy {sd["acc"]:.3f} and loss {sd["loss"]:.3f}')
+            pretrained_state_dict = {k.replace('module.', ''): v for k, v in sd["model_state_dict"].items()}
 
+            # remove the last layer     
+            for key in list(pretrained_state_dict.keys()):
+                if 'head' in key:
+                    del pretrained_state_dict[key]
+
+            model.load_state_dict(pretrained_state_dict, strict=False)
+        
         sigmoid = torch.nn.Sigmoid()
 
         if self.hparams.freezeBackbone:
@@ -210,26 +211,22 @@ class SiameseNetwork(pl.LightningModule):
             for param in model.parameters():
                 param.requires_grad = False
 
-        return model, embedding_one_net, embedding_two_net, sigmoid
+     
 
-    def forward_once(self, x):
+        return model, embedding, sigmoid
 
-        output = self.model(x)
-        output = output.view(output.size()[0], -1)
-
-        return output
 
     def forward(self, input1, input2):
 
-        output1_n = self.forward_once(input1)
-        output2_n = self.forward_once(input2)
+        output1 = self.model(input1)
+        output2 = self.model(input2)
 
-        output1 = self.embedding_one_net(output1_n)
-        output2 = self.embedding_one_net(output2_n)
 
         output_con = torch.cat((output1, output2), 1)
 
-        output_before_sig = self.embedding_two_net(output_con)
+        #print(output_con.shape)
+
+        output_before_sig = self.embedding(output_con)
 
         output = self.sigmoid(output_before_sig)
 
