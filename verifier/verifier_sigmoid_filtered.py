@@ -66,7 +66,7 @@ def parse_args():
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
+        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
         help="Folder contians database images.",
     )
 
@@ -79,7 +79,7 @@ def parse_args():
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
+        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
         help="Folder containing CSV files meta data for of test images.",
     )
 
@@ -301,4 +301,4 @@ if __name__ == '__main__':
 
 
     out_db.reset_index()
-    out_db.to_csv(f'/data/omran/cities_data/results/dataset_10k/ResNet50_ImageNetT_VippTraining_test_100_restricted/{args.test_city}_on_{args.database_city}_database.csv',index=False)
+    out_db.to_csv(f'/data/omran/cities_data/results/dataset_10k/ResNet50_ImageNetT_VippTraining_test_100_restricted_V2/{args.test_city}_on_{args.database_city}_database.csv',index=False)

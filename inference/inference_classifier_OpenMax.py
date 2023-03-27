@@ -44,7 +44,7 @@ class SiameseNetwork(pl.LightningModule):
         #model = models.__dict__[self.hparams.arch](
         #    weights='ResNet18_Weights.DEFAULT')
 
-        model = models.__dict__[self.hparams.arch](weights='ResNet50_Weights.DEFAULT')
+        model = models.__dict__[self.hparams.arch](weights='ResNet101_Weights.DEFAULT')
 
         nfeatures = model.fc.in_features
         model = torch.nn.Sequential(*list(model.children())[:-1])
@@ -116,7 +116,7 @@ class SiameseNetwork(pl.LightningModule):
         #print(f'correct : {correct}')
         val_acc = 100. * correct / len(output)
 
-        self.log_dict({"val_loss": loss, "val_acc": val_acc},
+        self.log_dict({"val_loss": loss, "acc": val_acc},
                       prog_bar=True, logger=True, on_epoch=True)
 
         #logging.info("End validation step")
@@ -233,7 +233,7 @@ def parse_args():
     args.add_argument(
         "--checkpoint",
         type=Path,
-        default=Path("/data/omran/cities_data/models/city_classifier/dataset10k/resnet50/230203-0739/ckpts/epoch_38.ckpt"),
+        #default=Path("/data/omran/cities_data/models/city_classifier/dataset10k/resnet50/230203-0739/ckpts/epoch_38.ckpt"),
         #default=Path("/data/omran/cities_data/models/city_classifier/dataset10k/resnet101_GeoVIPP/230211-1245/epocl_1.ckpt"),           
         help="Checkpoint to already trained model (*.ckpt)",
     )
@@ -248,103 +248,74 @@ if __name__ == '__main__':
     with open(args.config) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
+    #model_params = config["model_params"]
+    #model_params["weights"] = args.checkpoint
+    #trainer_params = config["trainer_params"]
+
     model_params = config["model_params"]
-    model_params["weights"] = args.checkpoint
     trainer_params = config["trainer_params"]
 
-    args = parse_args()
-
-    logging.basicConfig(level=logging.INFO)
-
-    #print(model_params)
-
+    out_dir = Path(config["out_dir"]) / datetime.now().strftime("%y%m%d-%H%M")
+    out_dir.mkdir(exist_ok=True, parents=True)
+    logging.info(f"Output directory: {out_dir}")
 
     model = SiameseNetwork(hparams=Namespace(**model_params))
 
-
+    logger = pl.loggers.TensorBoardLogger(
+        save_dir=str(out_dir), name="tb_logs")
+    checkpoint_dir = out_dir / "ckpts" / "{epoch:03d}-{val_loss:.4f}"
+    #checkpoint_dir = out_dir / "ckpts"
+    checkpointer = pl.callbacks.model_checkpoint.ModelCheckpoint(
+        checkpoint_dir)
 
     trainer = pl.Trainer(
         **trainer_params,
+        logger=logger,
+        val_check_interval=model_params["val_check_interval"],
+        checkpoint_callback=checkpointer,
+        progress_bar_refresh_rate=1,
     )
 
-    trainer.test(model=model.eval(),ckpt_path=args.checkpoint)
-    #trainer.test(model)
+    trainer.fit(model)
 
+    trainer.test(model)
 
-
-    #trainer.test(dataloaders=test_dataloaders)
-
-    #print(model)
-    #model.eval()
-
-
-    #logging.info(f"Loading test data   : {model_params['imageFolderTest']}")
  
+ #   print('-------------------------------Manual Test----------------------------------')
 
-    test_dataloader = model.test_dataloader()
+ 
+ #   logging.info(f"Loading test data   : {model_params['imageFolderTest']}")
+ #   test_dataloader = model.test_dataloader()
 
-    dataset_length = len(test_dataloader.dataset)
-    logging.info(f"Number of images: {dataset_length}")
+ #   dataset_length = len(test_dataloader.dataset)
+ #   logging.info(f"Number of images: {dataset_length}")
 
-    if len(test_dataloader.dataset) == 0:
-        raise RuntimeError(f"No images found in {args.image_dir}")
+ #   if len(test_dataloader.dataset) == 0:
+ #       raise RuntimeError(f"No images found in {args.image_dir}")
 
+ #   correct = 0
 
-    #trainer.test(model)
+ #   y_true = []
+ #   y_pred = []
 
-    #model.validation_step()
+ #   if torch.cuda.is_available():
+ #       model.cuda()
 
-    correct = 0
+ #   model.eval()
 
-    y_true = []
-    y_pred = []
+ #   for im, target in tqdm(test_dataloader):    
 
-    #for im1, im2, target, city_1, city_2 in tqdm(test_dataloader):
+ #       im = im.cuda()
+ #       target = target.cuda()
 
-    if torch.cuda.is_available():
-        model.cuda()
+ #       output_model = model(im)
 
-    model.eval()
+ #       probs = torch.softmax(output_model, dim=1)
+ #       pred = probs.argmax(dim=1)
+ #       correct += pred.eq(target.view_as(pred)).sum().item()
 
-    for im, target in tqdm(test_dataloader):    
-        #print('-----------------------------------------------------------------------------')
-        im = im.cuda()
-        target = target.cuda()
-
-        output_model = model(im)
-
-        #print(f'target {target}')
-
-        probs = torch.softmax(output_model, dim=1)
-        #print(f'probs : {probs}')
-        pred = probs.argmax(dim=1)
-
-        #print(f'pred {pred}')
-
-        correct += pred.eq(target.view_as(pred)).sum().item()
-
-        ## For confusion matrix 
-        #y_true_temp = target.cpu().detach().numpy()
-        #for i in y_true_temp:
-        #    y_true.append(i[:])    
-    #print(correct)
-    val_acc = 100. * correct / dataset_length
-    print(f"val_acc : {val_acc}")
-
-    #    pred = torch.where(output_model > 0.5, 1, 0)
-
-        # For confusion matrix 
-    #    y_pred_temp = pred.cpu().detach().numpy()
-    #    for i in y_pred_temp:
-    #        y_pred.append(i[:])
-
-
-    #    correct = correct + pred.eq(target.view_as(pred)).sum().item()
-
-    #print(confusion_matrix(y_true, y_pred))
-    #print(confusion_matrix(y_true, y_pred, normalize='true'))
-
-    #print(f'acc skealrn just to check {accuracy_score(y_true, y_pred) * 100 }')
+ #   acc = 100. * correct / dataset_length
+ #   print(f"acc : {acc}")
 
 
  

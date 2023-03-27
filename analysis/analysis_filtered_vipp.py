@@ -41,7 +41,7 @@ def parse_args():
     args.add_argument(
         "--results_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/dataset_10k/ResNet50_ImageNetT_VippTraining_test_100_restricted"),
+        default=Path("/data/omran/cities_data/results/dataset_10k/ResNet50_ImageNetT_VippTraining_test_100_restricted_V2"),
         help="Results CSVs folder.",
     )
 

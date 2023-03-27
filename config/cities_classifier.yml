@@ -1,30 +1,30 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/city_classifier/dataset10k/resnet18_batch_size_32/
+out_dir: /data/omran/cities_data/models/city_classifier/dataset10k/resnet101_VIPP_Pretrain_batch_size_64
 model_params:
-  arch: resnet50 #resnet50 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
+  arch: resnet101 #resnet50 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64
   number_cities: 10
-  weights: null #'/data/omran/cities_data/models/pre_tranined/resnet101_GeoVIPP.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
-  batch_size: 16 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
-  val_check_interval: 3125 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  weights: '/data/omran/cities_data/models/pre_tranined/resnet101_GeoVIPP.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
+  batch_size: 64 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
+  val_check_interval: 1562 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   
   margin: 1.0
   optim:
     # SGD
     params:
-      lr:  0.01 #0.001
+      lr:  0.001 #0.001
       momentum: 0.9
-      #weight_decay: 0.0001  #weight_decay: 0.0001
+      weight_decay: 0.0001  #weight_decay: 0.0001
   scheduler:
     # MultiStepLR
     params:
       gamma: 0.5  #  gamma: 0.5 
-      milestones: [2, 4, 8, 16, 32, 64] # [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570, 600] #  [4, 8, 12, 13, 14, 15]
+      milestones: [1, 2, 4, 8, 12, 14] #[4, 8, 12, 13, 14, 15] # [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570, 600] #  [4, 8, 12, 13, 14, 15]
 
 
   imageFolderTrain:  /data/omran/cities_data/dataset/filtered/dataset_10k/training
   imageFolderValid:  /data/omran/cities_data/dataset/filtered/dataset_10k/validation
-  imageFolderTest:   /data/omran/cities_data/dataset/filtered/dataset_10k/validation
+  imageFolderTest:   /data/omran/cities_data/dataset/filtered/dataset_10k/test
 
   database_csv:      /data/omran/cities_data/dataset/S16_database_10k.csv
   database_vipp :    /data/omran/cities_data/dataset/Vipp_classes_10k.csv

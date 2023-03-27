@@ -14,7 +14,7 @@ export CUDA_VISIBLE_DEVICES=4
 
 #declare -a city_list=("Paris" "Tokyo")
 
-#declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "Paris" "Tokyo")  # "NewYork" "LosAngeles" "Rome" "Milan" 
+declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "Paris" "Tokyo")  # "NewYork" "LosAngeles" "Rome" "Milan" 
 
 
 #declare -a city_list=("Amman" "Istanbul" "Mexico_city" "Singapore")
@@ -32,20 +32,23 @@ done
 #declare -a city_list=("NewYork" "LosAngeles")
 #declare -a city_list=("Rome" "Milan")
 
-declare -a city_list=("Vancouver" "Quebec") 
+#declare -a city_list=("Vancouver" "Quebec") 
 
-for city1 in ${city_list[@]}; do
-   for city2 in ${city_list[@]}; do
-      python3 verifier_sigmoid_filtered.py --test_city $city1 --database_city $city2
-   done   
-done
+#for city1 in ${city_list[@]}; do
+#   for city2 in ${city_list[@]}; do
+#      python3 verifier_sigmoid_filtered.py --test_city $city1 --database_city $city2
+#   done   
+#done
 
 #python3 verifier_sigmoid_filtered.py --test_city Los_Angeles --database_city Los_Angeles
 
-declare -a city_list=("Florence" "Venice") 
+#declare -a city_list=("Florence" "Venice") 
 
-for city1 in ${city_list[@]}; do
-   for city2 in ${city_list[@]}; do
-      python3 verifier_sigmoid_filtered.py --test_city $city1 --database_city $city2
-   done   
-done
+#for city1 in ${city_list[@]}; do
+#   for city2 in ${city_list[@]}; do
+#      python3 verifier_sigmoid_filtered.py --test_city $city1 --database_city $city2
+#   done   
+#done
+
+
+#python3 verifier_sigmoid_filtered.py --test_city $city1 --database_city $city2 
