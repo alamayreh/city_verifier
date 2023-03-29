@@ -19,7 +19,7 @@ import pandas as pd
 import os
 from os.path import isfile, join
 
-# export CUDA_VISIBLE_DEVICES=4,5,6,7
+# export CUDA_VISIBLE_DEVICES=2,3,4,5,6,7
 # python3 train_vit_siamese.py --config ~/siamese_cities/config/siamese_vit.yml
 
 class SiameseNetworkDataset(Dataset):
