@@ -1,3 +1,4 @@
+## FOR JUN ###
 import sys
 sys.path.insert(0, '/data/omran/siamese_cities')
 import torch
