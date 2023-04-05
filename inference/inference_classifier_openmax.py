@@ -108,7 +108,7 @@ def parse_args():
     args.add_argument(
         "--test_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test"),   
+        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),   
         help="Checkpoint to already trained model (*.ckpt)",
     ) 
     

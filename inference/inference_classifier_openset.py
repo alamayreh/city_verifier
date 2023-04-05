@@ -17,6 +17,7 @@ import math
 from scipy import spatial
 import random
 
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 from pytorch_ood.utils import OODMetrics, ToUnknown
 from pytorch_ood.detector import OpenMax
 
@@ -109,7 +110,7 @@ def parse_args():
     args.add_argument(
         "--test_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),   
+        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test"),
         help="This is the test dir closed set",
     ) 
     
@@ -156,6 +157,10 @@ if __name__ == '__main__':
     logging.info(f"Loading test data   : {args.test_dir}")
 
     test_dataloader = dataloader(args.test_dir,batch_size=32,num_workers=1)
+    
+    logging.info(f"Loading open test data   : {args.test_out_dir}")
+
+    test_open_dataloader = dataloader(args.test_out_dir,batch_size=32,num_workers=1)
 
     dataset_length = len(test_dataloader.dataset)
     logging.info(f"Number of images: {dataset_length}")
@@ -165,8 +170,8 @@ if __name__ == '__main__':
 
     correct = 0
 
+    y_score = []
     y_true = []
-    y_pred = []
 
     for im, target in tqdm(test_dataloader):    
 
@@ -174,13 +179,37 @@ if __name__ == '__main__':
         target = target.cuda()
 
         output_model = model(im)
-
+        
         probs = torch.softmax(output_model, dim=1)
+        logits, _ = output_model.max(dim=1)
+        
+        y_score += logits.detach().cpu().numpy().tolist()
+        y_true += np.ones(im.shape[0]).tolist()
+        
         pred = probs.argmax(dim=1)
         correct += pred.eq(target.view_as(pred)).sum().item()
 
     acc = 100. * correct / dataset_length
     print(f"acc : {acc}")
+    
+    for im, target in tqdm(test_open_dataloader):    
+
+        im = im.cuda()
+        target = target.cuda()
+
+        output_model = model(im)
+
+        probs = torch.softmax(output_model, dim=1)
+        logits, _ = output_model.max(dim=1)
+        
+        y_score += logits.detach().cpu().numpy().tolist()
+        y_true += np.zeros(im.shape[0]).tolist()
+        
+        pred = probs.argmax(dim=1)
+        correct += pred.eq(target.view_as(pred)).sum().item()
+        
+    AUC = roc_auc_score(y_true, y_score)
+    print(f"Maximum Logit Score AUROC : {AUC}")
 
     print('--------------------------------------------------------------------')
 
@@ -218,7 +247,6 @@ if __name__ == '__main__':
     len_in_out = len(test_dataloader_closed_open.dataset) 
 
     for x, y in test_dataloader_closed_open:
-
         output = (detector(x.to(device)))
 
         #print('y',y)

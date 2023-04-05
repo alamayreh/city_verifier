@@ -10,11 +10,11 @@ export CUDA_VISIBLE_DEVICES=7
 #declare -a city_list=("Cairo" "Delhi" "Rio_de_Janeiro" "Sydney" "Tokyo")
 
 # Iterate the string array using for loop
-#declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London") # "NewYork" "LosAngeles" "Rome" "Milan" "Paris" "Tokyo")
+declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "NewYork" "LosAngeles" "Rome" "Milan" "Paris" "Tokyo")
 
 #declare -a city_list=("Paris" "Tokyo")
 
-declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "Paris" "Tokyo")  # "NewYork" "LosAngeles" "Rome" "Milan" 
+#$declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "Paris" "Tokyo")  # "NewYork" "LosAngeles" "Rome" "Milan" 
 
 #ython3 verifier_sigmoid_filtered.py --test_city $city  --database_city $city
 #declare -a city_list=("Amman" "Istanbul" "Mexico_city" "Singapore")
@@ -22,6 +22,8 @@ declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "Paris" "Tokyo")
 for city in ${city_list[@]}; do
    python3 verifier_vit.py --test_city $city  --database_city $city
 done
+
+
 
 #declare -a city_list=("Amsterdam" "Barcelona" "Berlin" "London" "NewYork" LosAngeles "Rome" "Milan" "Paris" "Tokyo")
 
