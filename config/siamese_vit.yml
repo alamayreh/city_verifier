@@ -34,7 +34,7 @@ model_params:
   num_workers: 8 #6
 # paramters for pytorch lightning trainer class
 trainer_params:
-  gpus: 6
+  gpus: 1
   max_epochs: 10000
   distributed_backend: dp #dp #null #ddp
   precision: 16

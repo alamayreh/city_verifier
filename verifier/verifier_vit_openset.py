@@ -288,6 +288,7 @@ if __name__ == '__main__':
             sim_whole_set = []
             ids = 1
             idx = 0
+            ref_num = 9
             for IMG_ID_test, IMG_ID_data_base, im1, im2, w_similarity in tqdm(dataloader):
                 # this loop run similarity between test set and each images in database set
                 # Question: what is database set?
@@ -297,7 +298,7 @@ if __name__ == '__main__':
                 #ids += 1
                 idx += 1
                 
-                if 101 * (ids - 1) + 6 < idx < ids * 101:
+                if 101 * (ids - 1) + ref_num < idx < ids * 101:
                     continue
                 
                 if idx == ids * 101:
@@ -321,9 +322,9 @@ if __name__ == '__main__':
                 p_same = (torch.ones_like(output_model)-output_model) * w_similarity 
                 p_diff = (output_model) * w_similarity
                 
-                p_score = p_same.cpu().detach().numpy()
-                p_score [p_score > 0.5] = 1
-                p_score [p_score <= 0.5] = 0
+                p_score = output_model.cpu().detach().numpy()
+                #p_score [p_score > 0.5] = 1
+                #p_score [p_score <= 0.5] = 0
                 sim_whole_set += p_score.tolist()
                 #print(np.array(sim_whole_set).shape)
         
@@ -340,7 +341,7 @@ if __name__ == '__main__':
         
         
             #print(np.array(sim_whole_set).shape)  # should be (N_test_images x N_datasase_images) x 1
-            sim_whole_set = np.array(sim_whole_set).reshape(101, 7)
+            sim_whole_set = np.array(sim_whole_set).reshape(ref_num+1, 101).transpose()
             #print(np.array(sim_whole_set).shape)
             out_db.reset_index()
         

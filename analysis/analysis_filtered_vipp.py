@@ -181,12 +181,12 @@ if __name__ == '__main__':
     same_thr         = (np.where(df_sum['votes_same'] > df_sum['votes_diff'], 1, 0)).sum()
 
     
-    print(f"Based on votes_sigmoid hard 0.5 thr                      : {same_db_sig[0].size / len_images}")
-    print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
+    ## print(f"Based on votes_sigmoid hard 0.5 thr                      : {same_db_sig[0].size / len_images}")
+    ## print(f"Based on votes_sigmoid soft                              : {same_db_sig_soft[0].size / len_images}")
     print(f"Based on votes_sigmoid > {thr} and < {thr}                   : {same_thr / len_images}")
     #print("--------------------------------------------------------------------")
-    if(number_voters_per_image!=0):
-        print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")
+    ## if(number_voters_per_image!=0):
+    ##    print(f"Based on probablity_same_similarity S16 Cosine           : {same_c_distance[0].size  / len_images}")
 
     print("####################################################################")
     
