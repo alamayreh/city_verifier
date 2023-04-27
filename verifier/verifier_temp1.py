@@ -67,16 +67,16 @@ def parse_args():
     args.add_argument(
         "--image_dir_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
-        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
         help="Folder contians database images.",
     )    
 
     args.add_argument(
         "--image_dir_test",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
-        #default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
+        #default=Path("/data/omran/cities_data/dataset/filtered/dataset_10k/test_100_restricted"),
+        default=Path("/data/omran/cities_data/dataset/filtered/open_set_restricted"),
         help="Folder containing CSV files meta data for of test images.",
     )
 

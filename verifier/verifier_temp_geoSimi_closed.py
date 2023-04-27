@@ -34,13 +34,13 @@ def parse_args():
         #default=Path("/data/omran/cities_data/models/dataset_10k/vit/pretrain_imagenet_56_batch/230328-0931/ckpts/epoch_34.ckpt"),     
           
         #Similarity_025 
-        default=Path("/data/omran//cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similairty/230420-0406/ckpts/epoch_38.ckpt"),
+        #default=Path("/data/omran//cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similairty/230420-0406/ckpts/epoch_38.ckpt"),
 
         #GeoVipp_50
         #default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50/230420-0451/ckpts/epoch_49.ckpt"),
 
         #GeoVIPP_25_similarity25  
-        #default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25/230421-0526/ckpts/"),
+        default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25/230421-0526/ckpts/epoch_16.ckpt"),
 
         help="Checkpoint to already trained model (*.ckpt)",
     )
@@ -50,9 +50,9 @@ def parse_args():
 
         #default=Path("/data/omran/cities_data/models/dataset_10k/vit/pretrain_imagenet_32_No_GeoVIPP/230412-0838/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/dataset_10k/vit/pretrain_imagenet_56_batch/230328-0931/tb_logs/version_0/hparams.yaml"),
-        default=Path("/data/omran//cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similairty/230420-0406/tb_logs/version_0/hparams.yaml"),
+        #default=Path("/data/omran//cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similairty/230420-0406/tb_logs/version_0/hparams.yaml"),
         #default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50/230420-0451/tb_logs/version_0/hparams.yaml"),
-        #default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25/230421-0526/tb_logs/version_0/hparams.yaml"),
+        default=Path("/data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25/230421-0526/tb_logs/version_0/hparams.yaml"),
 
         help="Path to hparams file (*.yaml) generated during training",
     )
@@ -60,7 +60,7 @@ def parse_args():
     args.add_argument(
         "--output_dir",
         type=Path,
-        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Similarity_025"),
+        default=Path("//data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_25_similarity_25"),
         help="Folder contains the output.",
     )  
 

@@ -21,7 +21,8 @@ import csv
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from pytorch_ood.utils import OODMetrics, ToUnknown
 from pytorch_ood.detector import OpenMax
-
+from glob import glob
+import os
 
 random.seed(0)
 np.random.seed(0)
@@ -133,7 +134,17 @@ def parse_args():
 
 
 if __name__ == '__main__':
-
+    tfm_test = torchvision.transforms.Compose(
+            [
+                torchvision.transforms.Resize(256),
+                torchvision.transforms.CenterCrop(224),
+                torchvision.transforms.ToTensor(),
+                torchvision.transforms.Normalize(
+                    (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
+                ),
+            ]
+        )
+        
     args = parse_args()
 
     logging.basicConfig(level=logging.INFO)
@@ -171,113 +182,41 @@ if __name__ == '__main__':
         raise RuntimeError(f"No images found in {args.image_dir}")
 
     correct = 0
-
+    in_city = ['Amsterdam', 'Barcelona', 'Berlin', 'London', 'LosAngeles', 'Milan', 'NewYork', 'Paris', 'Rome', 'Tokyo']
     y_score = []
     y_true = []
-    target_cvs = f'closedset_valid10k_score.csv'
+    target_cvs = f'closedset_valid10k_scores.csv'
     with open(target_cvs, 'w') as cvsFile:
         writer = csv.writer(cvsFile)
-        writer.writerow(['Amsterdam', 'Barcelona', 'Berlin', 'London', 'LosAngeles', 'Milan', 'NewYork', 'Paris', 'Rome', 'Tokyo'])
-        for im, target in tqdm(test_dataloader):    
-    
-            im = im.cuda()
-            target = target.cuda()
-    
-            output_model = model(im)
-            
-            probs = torch.softmax(output_model, dim=1)
-            logits, _ = output_model.max(dim=1)
-            
-            y_score += logits.detach().cpu().numpy().tolist()
-            y_true += np.ones(im.shape[0]).tolist()
-            
-            pred = probs.argmax(dim=1)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-            for idx in output_model.detach().cpu().numpy().tolist():
-                #print(idx)
-                writer.writerow(idx)
-                #writer.writerow([idx[0], idx[1], idx[2], idx[3], idx[4], idx[5], idx[6], idx[7], idx[8], idx[9]])
-
-    acc = 100. * correct / dataset_length
-    print(f"acc : {acc}")
-    
-    for im, target in tqdm(test_open_dataloader):    
-
-        im = im.cuda()
-        target = target.cuda()
-
-        output_model = model(im)
-
-        probs = torch.softmax(output_model, dim=1)
-        logits, _ = output_model.max(dim=1)
+        writer.writerow(['img_path', 'Amsterdam', 'Barcelona', 'Berlin', 'London', 'LosAngeles', 'Milan', 'NewYork', 'Paris', 'Rome', 'Tokyo', 'GT', 'Pred_correct'])
+        for label, city in enumerate(in_city):
+            target = torch.Tensor([label]).unsqueeze(0)
+            closed_set = glob(os.path.join(args.test_dir, city, '*.*'))
+            #for im, target in tqdm(test_dataloader):    
+            for img_path in closed_set:
+                im = Image.open(img_path)
+                im = tfm_test(im).unsqueeze(0)
+                im = im.cuda()
+                target = target.cuda()
         
-        y_score += logits.detach().cpu().numpy().tolist()
-        y_true += np.zeros(im.shape[0]).tolist()
-        
-        pred = probs.argmax(dim=1)
-        correct += pred.eq(target.view_as(pred)).sum().item()
-        
-    AUC = roc_auc_score(y_true, y_score)
-    print(f"Maximum Logit Score AUROC : {AUC}")
+                output_model = model(im)
+                
+                probs = torch.softmax(output_model, dim=1)
+                logits, _ = output_model.max(dim=1)
+                
+                y_score += logits.detach().cpu().numpy().tolist()
+                y_true += np.ones(im.shape[0]).tolist()
+                
+                pred = probs.argmax(dim=1)
+                correct += pred.eq(target.view_as(pred)).sum().item()
+                if pred.eq(target.view_as(pred)).sum().item() == 1:
+                    pred_idx = 1
+                else:
+                    pred_idx = 0
+                idx = output_model.detach().cpu().numpy().tolist()
+                #print(len(idx[0]))
+                writer.writerow([img_path] + idx[0] + [label] + [pred_idx])
+                #writer.writerow([img_path, idx[0], idx[1], idx[2], idx[3], idx[4], idx[5], idx[6], idx[7], idx[8], idx[9], label, pred_idx])
 
-    print('--------------------------------------------------------------------')
-
-    logging.info(f"Loading training data : {args.training}")
-
-    training_dataloader = dataloader(args.training,batch_size=32,num_workers=1)
-
-    logging.info(f"Loading test data close and open dataset : {args.test_dir} and {args.test_out_dir}")
-
-
-    #test_dataloader_closed_open = dataloader('/data/omran/cities_data/dataset/filtered/test_closed_open_set',batch_size=32,num_workers=1) 
-    dataset_in_test  = datafolder(args.test_dir)
-    dataset_out_test = datafolder_out(args.test_out_dir)
-
-    
-
-    test_dataloader_closed_open = torch.utils.data.DataLoader(dataset_in_test + dataset_out_test,
-            batch_size=32,
-            num_workers=1,
-            pin_memory=True,
-            shuffle=True,)
-
-
-    device = "cuda:0"
-
-
-    detector = OpenMax(model, tailsize=25, alpha=5, euclid_weight=0.5)
-    detector.fit(training_dataloader, device=device)
-
-    metrics = OODMetrics()
-
-    threshold = 0.5 
-
-    correct_in_out = 0
-    len_in_out = len(test_dataloader_closed_open.dataset) 
-
-    for x, y in test_dataloader_closed_open:
-        output = (detector(x.to(device)))
-
-        #print('y',y)
-        #print('output',output)
-        metrics.update(output, y)
-
-
-        out_th = torch.threshold(output, threshold, 0)
-
-        #print("out_th",out_th)
-
-        pred_in_out = torch.where(out_th == 0, torch.tensor(0), torch.tensor(1))
-
-        #print("pred_in_out",pred_in_out)
-        
-        target_in_out = torch.where(y == -1, torch.tensor(1), torch.tensor(0))
-
-        #print("target_in_out",target_in_out)
-
-        correct_in_out += pred_in_out.eq(target_in_out.view_as(pred_in_out)).sum().item()
-
-
-    print(metrics.compute())
-
-    print(f'acc openset detector = {correct_in_out / len_in_out}')
+        acc = 100. * correct / dataset_length
+        print(f"acc : {acc}")

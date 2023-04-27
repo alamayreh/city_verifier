@@ -1,14 +1,15 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/dataset_10k/vit/pretrain_imagenet_56_batch #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
+out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25 #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
 model_params:
-  #arch: resnet101 #resnet101 # wide_resnet101_2 #resnet50 # resnet101 model architecture from torchvision namespace wide_resnet101_2
   embedding_dim: 64
   weights: null #/data/omran/cities_data/models/pretrain_vit/vit_16h_model.pt #/data/omran/cities_data/models/city_classifier/Resnet50_10k/230203-0739/ckpts/epoch_38.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_ImageNet_15/230123-0409/ckpts/epoch_79.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
-  similarity_training: false 
+  similarity_training: true 
+  geovipp_training: true
   freezeBackbone : false
-  num_pairs : 16384 #65536 #10240
-  batch_size: 56 #160 #2048 #160 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
-  val_check_interval: 292 #410 #16 #410 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  num_pairs_validation: 8192 #6384 
+  num_pairs : 16384 #16384 #$ #65536 #10240
+  batch_size: 32 #160 #2048 #160 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
+  val_check_interval: 512 #410 #16 #410 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   
   margin: 1.0
   optim:
@@ -23,7 +24,6 @@ model_params:
       gamma: 0.5
       milestones: [4, 8, 12, 13, 14, 15]
 
-
   imageFolderTrain:  /data/omran/cities_data/dataset/filtered/dataset_10k/training
   imageFolderValid:  /data/omran/cities_data/dataset/filtered/dataset_10k/validation
   imageFolderTest:   /data/omran/cities_data/dataset/filtered/dataset_10k/test
@@ -31,10 +31,10 @@ model_params:
   database_csv:      /data/omran/cities_data/dataset/S16_database_10k.csv
   database_vipp :    /data/omran/cities_data/dataset/Vipp_classes_10k.csv
 
-  num_workers: 8 #6
+  num_workers: 4 #6
 # paramters for pytorch lightning trainer class
 trainer_params:
-  gpus: 1
+  gpus: 4
   max_epochs: 10000
   distributed_backend: dp #dp #null #ddp
   precision: 16

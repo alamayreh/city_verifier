@@ -1,0 +1,1 @@
+{'Amsterdam': 0, 'Barcelona': 1, 'Berlin': 2, 'London': 3, 'LosAngeles': 4, 'Milan': 5, 'NewYork': 6, 'Paris': 7, 'Rome': 8, 'Tokyo': 9}

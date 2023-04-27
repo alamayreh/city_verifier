@@ -19,22 +19,22 @@ import pandas as pd
 import os
 from os.path import isfile, join
 
-# export CUDA_VISIBLE_DEVICES=2,3,4,5,6,7
+# export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 # python3 train_vit_siamese.py --config ~/siamese_cities/config/siamese_vit.yml
 
 class SiameseNetworkDataset(Dataset):
 
-    def __init__(self, imageFolderDataset, database_csv_File,database_vipp_file,similarity_training, transform=None, num_pairs=None):
+    def __init__(self, imageFolderDataset, database_csv_File,database_vipp_file,similarity_training,geovipp_training, transform=None, num_pairs=None):
 
         self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         self.num_pairs = num_pairs
         self.similarity_training = similarity_training
+        self.geovipp_training = geovipp_training
         self.database_csv = pd.read_csv(database_csv_File,usecols=['IMG_ID','S16']).set_index('IMG_ID')
         self.database_vipp = pd.read_csv(database_vipp_file,usecols=['IMG_ID','pred_10_classes']).set_index('IMG_ID')
         self.vipp_classes = {"Amsterdam":9,"Barcelona":2,"Berlin":4,"Paris":3,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"NewYork":0,"LosAngeles":0,"Rio_de_Janeiro":11,"Rome":5,"Milan":5,"Shanghai":10,"Beijing":10,"Sydney":8,"Tokyo":7}   
-        #self.vipp_classes = {"Munich":4,"Berlin":4,"Cairo":44,"Delhi":14,"London":1,"Edinburgh":1,"Moscow":22,"St_Petersburg":22,"New_york":0,"Rio_de_Janeiro":11,"Roma":5,"Milan":5,"Shanghai":10,"Beijing":10,"Tokyo":7}   
- 
+
     def string_to_prob(self, string_prob):
 
         # Read probability from datafram
@@ -58,8 +58,8 @@ class SiameseNetworkDataset(Dataset):
         prob_1 = self.string_to_prob(prob_1)
 
         cDistance = spatial.distance.cosine(prob_0, prob_1)
-
-        return (1- cDistance)
+        # 0 Similar, 1 diff
+        return cDistance
 
     def get_IMG_ID(self,path_string):
         image_prob_str = path_string.split('/')
@@ -78,40 +78,60 @@ class SiameseNetworkDataset(Dataset):
 
     def __getitem__(self, index):
 
-        img0_tuple = random.choice(self.imageFolderDataset.imgs)
+        
 
         # we need to make sure approx 50% of images are in the same class
         should_get_same_class = random.randint(0, 1)
         cos_dist = 0
 
         if(self.similarity_training):
+
             if should_get_same_class:
                 while True:
                     # keep looping till the same class image is found
+                    img0_tuple = random.choice(self.imageFolderDataset.imgs)
                     img1_tuple = random.choice(self.imageFolderDataset.imgs)
-                    if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0])):
-                        img0_ID = (self.get_IMG_ID(img0_tuple[0]))
-                        img1_ID = (self.get_IMG_ID(img1_tuple[0]))
-                        cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
-                        if(cos_dist>0.5):
-                            break
+                    
+                    img0_ID = (self.get_IMG_ID(img0_tuple[0]))
+                    img1_ID = (self.get_IMG_ID(img1_tuple[0]))
+                    cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
+                    
+                    if ((img0_tuple[1] == img1_tuple[1]) and (img0_tuple[0] != img1_tuple[0]) and (cos_dist < 0.25)):
+                        break
+
+
             else:
                 while True:
                     # keep looping till a different class image is found
+                    img0_tuple = random.choice(self.imageFolderDataset.imgs)
                     img1_tuple = random.choice(self.imageFolderDataset.imgs)
+                    
+                    img0_ID = (self.get_IMG_ID(img0_tuple[0]))
+                    img1_ID = (self.get_IMG_ID(img1_tuple[0]))
+                    
+                    cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
+                    
+                    if ((img0_tuple[1] != img1_tuple[1]) and (cos_dist < 0.25) and (not self.geovipp_training)):
+                        break
+                    
+                    if(self.geovipp_training):
+                        randBool = random.random() > 0.75
 
-                    if img0_tuple[1] != img1_tuple[1]:
-                        img0_ID = (self.get_IMG_ID(img0_tuple[0]))
-                        img1_ID = (self.get_IMG_ID(img1_tuple[0]))
-                        cos_dist = float(self.distance_cos(self.database_csv.loc[img0_ID].S16,self.database_csv.loc[img1_ID].S16)) 
-                        if(cos_dist>0.5):
-                            break                    
-                      
+
+                        if(randBool):
+                            img0_class = (self.get_vipp_class(img0_tuple[0]))
+                            if ((img0_tuple[1] != img1_tuple[1]) and  (cos_dist < 0.25) and (img0_class in self.get_top(self.database_vipp.loc[img1_ID].pred_10_classes,num=3)) ):
+                                break  
+                        else:
+                            if ((img0_tuple[1] != img1_tuple[1]) and (cos_dist < 0.25)):
+                                break
+
         else:
 
             if should_get_same_class:
                 while True:
                     # keep looping till the same class image is found
+                    img0_tuple = random.choice(self.imageFolderDataset.imgs)
                     img1_tuple = random.choice(self.imageFolderDataset.imgs)
                     
                     img0_ID = (self.get_IMG_ID(img0_tuple[0]))
@@ -123,6 +143,7 @@ class SiameseNetworkDataset(Dataset):
             else:
                 while True:
                     # keep looping till a different class image is found
+                    img0_tuple = random.choice(self.imageFolderDataset.imgs)
                     img1_tuple = random.choice(self.imageFolderDataset.imgs)
 
                     img0_ID = (self.get_IMG_ID(img0_tuple[0]))
@@ -131,10 +152,13 @@ class SiameseNetworkDataset(Dataset):
                     img0_class = (self.get_vipp_class(img0_tuple[0]))
                     #img1_class = (self.get_vipp_class(img0_tuple[0]))
 
-                    
-                    if (img0_tuple[1] != img1_tuple[1] and img0_class in self.get_top(self.database_vipp.loc[img1_ID].pred_10_classes,num=3)):
-                        break                    
-                
+                    if(self.geovipp_training and random.randint(0, 1)):
+                        if ((img0_tuple[1] != img1_tuple[1]) and (img0_class in self.get_top(self.database_vipp.loc[img1_ID].pred_10_classes,num=3)) ):
+                            break                    
+                    else:
+                        if (img0_tuple[1] != img1_tuple[1]):
+                            break        
+        
         img0 = Image.open(img0_tuple[0])
         img1 = Image.open(img1_tuple[0])
 
@@ -143,18 +167,11 @@ class SiameseNetworkDataset(Dataset):
             img1 = self.transform(img1)
 
         
-        #print(f'{img0_tuple[0]} | {img1_tuple[0]} \n Simialrity {cos_dist}')
-        #print('------------------------------------------------------------------------------------------------------')    
-        
-        #print(f'{img0_tuple[0]} | {img1_tuple[0]} \n img0_class : { (self.get_vipp_class(img0_tuple[0]))} img1_top3 : {self.get_top(self.database_vipp.loc[img1_ID].pred_10_classes,num=3)} pair {int(img1_tuple[1] != img0_tuple[1])}')
-        #print('------------------------------------------------------------------------------------------------------')    
-
         # Same 0 city, diff 1 citiy     
         similarity = 1  
         return img0, img1, torch.from_numpy(np.array([int(img1_tuple[1] != img0_tuple[1])], dtype=np.float32)),torch.from_numpy(np.array([similarity],dtype=np.float32))
 
     def __len__(self):
-        # return len(self.imageFolderDataset.imgs)
         return self.num_pairs
 
 
@@ -178,10 +195,6 @@ class SiameseNetwork(pl.LightningModule):
         last_layer_features = model.heads.head.in_features
 
         model.heads.head = torch.nn.Linear(in_features=last_layer_features, out_features= self.hparams.embedding_dim, bias=True) 
-
-        # print the last layer 
-        #print(list(model.children())[-1])
-        #print(model)
 
         embedding = torch.nn.Sequential(
             torch.nn.Linear(self.hparams.embedding_dim *
@@ -252,10 +265,6 @@ class SiameseNetwork(pl.LightningModule):
         x0, x1, target, similarity = batch
         output_model = self(x0, x1)
 
-        #print(x0.size())
-        #print(similarity.size())
-        #print(target.size())
-
         loss_criterion = torch.nn.BCELoss(weight =similarity)
         loss = loss_criterion(output_model, target)
     
@@ -314,7 +323,7 @@ class SiameseNetwork(pl.LightningModule):
             self.hparams.imageFolderTrain)
         #logging.info(f"Build train")
         #  imageFolderDataset, database_csv_File, transform=None, num_pairs=25600)    
-        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Train, transform=tfm_train,database_csv_File=self.hparams.database_csv,database_vipp_file=self.hparams.database_vipp,similarity_training=self.hparams.similarity_training, num_pairs=self.hparams.num_pairs)
+        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Train, transform=tfm_train,database_csv_File=self.hparams.database_csv,database_vipp_file=self.hparams.database_vipp,similarity_training=self.hparams.similarity_training,geovipp_training = self.hparams.geovipp_training, num_pairs=self.hparams.num_pairs)
 
         dataloader = torch.utils.data.DataLoader(
             dataset,
@@ -348,7 +357,7 @@ class SiameseNetwork(pl.LightningModule):
 
         DatasetFolder_Valid = torchvision.datasets.ImageFolder(self.hparams.imageFolderValid)
         #logging.info(f"Build validation")
-        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,database_vipp_file=self.hparams.database_vipp,similarity_training=self.hparams.similarity_training, num_pairs= int (self.hparams.num_pairs ) )
+        dataset = SiameseNetworkDataset(imageFolderDataset=DatasetFolder_Valid, transform=tfm_valid,database_csv_File=self.hparams.database_csv,database_vipp_file=self.hparams.database_vipp,similarity_training=self.hparams.similarity_training,geovipp_training = self.hparams.geovipp_training, num_pairs= self.hparams.num_pairs_validation )
         #logging.info(f"Finish validation")
         dataloader = torch.utils.data.DataLoader(
             dataset,
@@ -357,10 +366,6 @@ class SiameseNetwork(pl.LightningModule):
             pin_memory=True,
         )
 
-        #self.total_number_training_images = len(dataloader.dataset)
-        #logging.info(f"\nThe total number of samples : {self.total_number_training_images}")
-        #logging.info('#####################################################################')
-        #logging.info('#####################################################################')
         return dataloader
 
 

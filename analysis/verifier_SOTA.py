@@ -59,7 +59,7 @@ def parse_args():
     args.add_argument(
         "--diameter_km",
         type=int,
-        default=25,
+        default=50,
         help="Test",
     )
 
@@ -157,12 +157,13 @@ if __name__ == '__main__':
     if(get_acc==True):
 
         closedset_list = ["Amsterdam", "Barcelona", "Berlin", "London", "NewYork", "LosAngeles", "Rome", "Milan", "Paris", "Tokyo"]
-        openset_list   = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver", "Venice", "Florence"]
+        #openset_list   = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "St_Petersburg","Edinburgh"]
 
 
         diag = 0
         off_diag = 0
         for city_test in closedset_list:
+            print('-----------------------------------------------------')
             for city_database in closedset_list:
 
                 city_lat, city_lng = get_city_coordinates(city_database,args.GPS_database)
@@ -189,10 +190,6 @@ if __name__ == '__main__':
 
                 print(f'Number of iamges from {city_test} predicted as {city_database} : {num_images_inside_circle/101}')
 
-        print(f'Diagonal acc :  {diag} and off-diagonal as {off_diag}')
+        print(f'Diagonal acc :  {diag/10} and off-diagonal as {off_diag/90}')
         
-        print(f'acc total on the close set : {0.5 * (diag/10) + 0.5 * (1 - off_diag/90)}')
-        
-        #print(f'acc total on the open set  : {0.5 * (diag/8) + 0.5 * (1 - off_diag/56)}')
-
-        #print(f'Total acc :  {diag} and off-diagonal as {off_diag}')
+        print(f'Acc total    : {0.5 * (diag/10) + (0.5) * (1 - off_diag/90)}')
