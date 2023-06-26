@@ -14,11 +14,11 @@ import math
 import numpy as np
 
 
-#python3 verification_acc.py --set open  --thr 0.6 --GeoVIPP --print_details --Similarity
-#python3 verification_acc.py --set closed  --thr 0.6 --GeoVIPP --print_details --Similarity
+#python3 generate_tables_vit.py --set open  --thr 0.6 --GeoVIPP --Similarity
+#python3 generate_tables_vit.py --set closed  --thr 0.6 --GeoVIPP  --Similarity
 
-#python3 verification_acc.py --set closed  --thr 0.6 --print_details 
-
+#python3 generate_tables_vit.py --set open  --thr 0.6 
+#python3 generate_tables_vit.py --set closed  --thr 0.6 
 
 def parse_args():
     args = ArgumentParser()
@@ -41,11 +41,11 @@ def parse_args():
         "--results_dir",
         type=Path,
         
-        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Base"),
+        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Base"),
 
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_100"),
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Similarity_025"),
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVipp_50"),
+        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVipp_50"),
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_25_similarity_25"),
 
         help="Results CSVs folder.",
@@ -123,11 +123,9 @@ def distance_cos(p_base,p_test):
 
 if __name__ == '__main__':
 
-    Top = 2
+    Top = 5
 
     args = parse_args()
-
-    logging.basicConfig(level=logging.INFO)
 
     thr = args.thr
 
@@ -135,15 +133,11 @@ if __name__ == '__main__':
 
     if(args.set == 'closed'):
         city_list = ["Amsterdam", "Barcelona", "Berlin", "London", "NewYork", "LosAngeles", "Rome", "Milan", "Paris", "Tokyo"]
-        #city_list = ["NewYork", "LosAngeles", "Rome", "Milan"]
 
     if(args.set == 'open'):
         city_list = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "Rio_de_Janeiro","Delhi"] 
-        #city_list = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "Beijing","Edinburgh"] 
-        #city_list = ["Delhi"] # #Rio_de_Janeiro , Delhi  Sydney Cairo
-        #city_list = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver", "Venice", "Florence", "Rome", "Moscow", "St_Petersburg", "Shanghai", "Beijing", "London", "Edinburgh"]
-        #city_list = ["Quebec", "Vancouver", "Venice", "Florence", "Rome", "Moscow", "St_Petersburg", "Shanghai", "Beijing", "London", "Edinburgh"]
 
+    print(f'                {city_list}')
     N = len(city_list)
 
     # Read similarity  
@@ -163,18 +157,19 @@ if __name__ == '__main__':
     off_diag_similarity   = 0
     
     for test_city in city_list:
+
+        print(f'{test_city:<14} ', end=' ')
+
         for database_city in city_list:
 
-            if(args.print_details):
-                print(f"Analysis results Test {test_city} city on {database_city} database.\n")
+            accpeted_images = 0
+            accuracy = 0 
 
             # Read results 
             df = pd.read_csv(f'{args.results_dir}/{test_city}_on_{database_city}_database.csv',usecols=['IMG_ID_test','IMG_ID_data_base','sigmoid_output'])
             
             img_test_list = df["IMG_ID_test"].unique()
             len_images = len(img_test_list)
-            #if(args.print_details):
-            #    print(f"Number of input images from the test city {test_city}      : {len_images}" )
 
             if(args.GeoVIPP):
 
@@ -182,17 +177,19 @@ if __name__ == '__main__':
                 img_test_list = df["IMG_ID_test"].unique()
                 out_list_database = [i for i in img_test_list if vipp_classes[database_city] not in get_top(db_vipp.loc[i].pred_10_classes,Top)] 
                 df = df[~df['IMG_ID_test'].isin(out_list_database)]
-                if(args.print_details):
-                    print(f"Number of accepted images from the test city {test_city} that recognized as {database_city} : { df['IMG_ID_test'].nunique()}\n" )
+                #if(args.print_details):
+                accpeted_images = df['IMG_ID_test'].nunique()
+
 
             if(df['IMG_ID_test'].nunique()==0):
-                if(args.print_details):
-                    print(f'results : 0.00')
+                accuracy == 0
+                
 
                 votes_sigmoid_hard = 0
                 votes_sigmoid_soft = 0
                 votes_sigmoid_thr  = 0 
                 votes_similarity   = 0
+                print(f'& {accuracy:.2f} - {accpeted_images:02d} ', end='')
 
                 continue
             # remove the same image from the database 
@@ -207,11 +204,10 @@ if __name__ == '__main__':
                 df['probablity_same_c'] = df.apply(lambda x:    (1-x.sigmoid_output) * (1-(x.cDistance)), axis=1)
                 df['probablity_diff_c'] = df.apply(lambda x:    (x.sigmoid_output) *   (1-(x.cDistance)), axis=1)
 
-            #print(df)
             if(args.Similarity):
                 df = df.loc[df['cDistance'] < 0.25]
 
-            #print(df)
+
 
             df.drop(['IMG_ID_data_base'], axis=1,inplace=True)
 
@@ -228,28 +224,18 @@ if __name__ == '__main__':
 
             df_sum = df.groupby('IMG_ID_test').sum()
 
-            #print(df_sum)
-
-
-
 
 
             same_db_sig      = (np.where(df_sum['votes_sigmoid_05_same'] > df_sum['votes_sigmoid_05_diff'], 1, 0)).sum()
 
-
             same_db_sig_soft = (np.where(df_sum['sigmoid_output'] < df_sum['1_sigmoid_output'], 1, 0)).sum()
-
             same_thr         = (np.where(df_sum['votes_same_thr'] > df_sum['votes_diff_thr'], 1, 0)).sum()
-
             same_c_distance = (np.where(df_sum['probablity_same_c'] > df_sum['probablity_diff_c'], 1, 0)).sum()
-
             votes_sigmoid_hard = same_db_sig / len_images
-
             votes_sigmoid_soft = same_db_sig_soft/ len_images
             votes_sigmoid_thr  = same_thr / len_images
-
             votes_similarity   = same_c_distance  / len_images
-            
+           
   
             if(test_city==database_city):
                     diag_hard+=votes_sigmoid_hard
@@ -262,23 +248,20 @@ if __name__ == '__main__':
                     off_diag_thr +=votes_sigmoid_thr
                     off_diag_similarity+=votes_similarity
 
-            if(args.print_details):
-                print(f"Based on votes_sigmoid hard 0.5 thr                      : {votes_sigmoid_hard}")
-                print(f"Based on votes_sigmoid soft                              : {votes_sigmoid_soft}")
-                print(f"Based on votes_sigmoid > {thr} and < {thr}                   : {votes_sigmoid_thr}")
-                print("--------------------------------------------------------------------")           
-                print(f"Based on probablity_same_similarity S16 Cosine           : {votes_similarity}")
-                print("--------------------------------------------------------------------")
+#            if(args.print_details):
+#                print(f"Based on votes_sigmoid hard 0.5 thr                      : {votes_sigmoid_hard}")
+#                print(f"Based on votes_sigmoid soft                              : {votes_sigmoid_soft}")
+#                print(f"Based on votes_sigmoid > {thr} and < {thr}                   : {votes_sigmoid_thr}")
+#                print("--------------------------------------------------------------------")           
+#                print(f"Based on probablity_same_similarity S16 Cosine           : {votes_similarity}")
+#                print("--------------------------------------------------------------------")
+            truncated_accuracy = float(f'{votes_similarity}'[:4])
+            print(f'& {truncated_accuracy:.2f} - {accpeted_images:02d} ', end='')
 
-            #print(df_cosine_votes)
 
+        print("\\\\")
 
-            #print(df_cosine_votes)        
-
-        if(args.print_details):
-            print("####################################################################")
-
-    print(f'Results path {args.results_dir}\n')
+    print(f'\n Top {Top} Results path {args.results_dir}\n')
     print(f'Number of cities : {N}, and the city list is {city_list}\n')    
     
     print(f'sigmoid hard 0.5 thr; acc : {0.5 * diag_hard/N + 0.5 * (1 - off_diag_hard /(N * N - N))},   Diagonal : {diag_hard/N} and off-diagonal as {off_diag_hard /(N * N - N)}')

@@ -156,15 +156,15 @@ if __name__ == '__main__':
 
     if(get_acc==True):
 
-        closedset_list = ["Amsterdam", "Barcelona", "Berlin", "London", "NewYork", "LosAngeles", "Rome", "Milan", "Paris", "Tokyo"]
-        #openset_list   = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "St_Petersburg","Edinburgh"]
+        #closedset_list = ["Amsterdam", "Barcelona", "Berlin", "London", "NewYork", "LosAngeles", "Rome", "Milan", "Paris", "Tokyo"]
+        openset_list   = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "Rio_de_Janeiro","Delhi"] #Rio_de_Janeiro , Delhi  Sydney Cairo
 
 
         diag = 0
         off_diag = 0
-        for city_test in closedset_list:
+        for city_test in openset_list:
             print('-----------------------------------------------------')
-            for city_database in closedset_list:
+            for city_database in openset_list:
 
                 city_lat, city_lng = get_city_coordinates(city_database,args.GPS_database)
 
