@@ -1,4 +1,3 @@
-1.   Train a classifier on the training set, and then use that classifier as the backbone for the siamese network.
-2.   Train a verifier (ViT 16 from scratch), using the classifier backbone as a pre-trained network.
-3.   Afterwards, perform verification and store the results for each image pair.
-4.   Finally, use an analysis script to obtain the final results.
+1.   Train a verifier (ViT 16 from ImageNet). 
+2.   Afterwards, perform verification and store the results for each image pair.
+3.   Finally, use an analysis script to obtain the final results.

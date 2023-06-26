@@ -310,6 +310,7 @@ class SiameseNetwork(pl.LightningModule):
         tfm_train = torchvision.transforms.Compose(
             [
                 torchvision.transforms.RandomHorizontalFlip(),
+                torchvision.transforms.RandomVerticalFlip(),  # To BE removed 
                 torchvision.transforms.RandomResizedCrop(
                     224, scale=(0.66, 1.0)),
                 torchvision.transforms.ToTensor(),

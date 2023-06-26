@@ -2,14 +2,14 @@
 out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50_vertical_flip/ #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
 model_params:
   embedding_dim: 64
-  weights: null #/data/omran/cities_data/models/pretrain_vit/vit_16h_model.pt #/data/omran/cities_data/models/city_classifier/Resnet50_10k/230203-0739/ckpts/epoch_38.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_ImageNet_15/230123-0409/ckpts/epoch_79.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
+  weights: null
   similarity_training: false 
   geovipp_training: true
   freezeBackbone : false
-  num_pairs_validation: 8192 #6384 
-  num_pairs : 16384 #16384 #$ #65536 #10240
-  batch_size: 32 #160 #2048 #160 #2048 #160 # for 1 GPU #160 no backbone on 4 gpus
-  val_check_interval: 512 #410 #16 #410 #64 #4000 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
+  num_pairs_validation: 8192 
+  num_pairs : 16384 
+  batch_size: 32 
+  val_check_interval: 512 # validate after x steps (batches) i.e. batch_size*val_check_interval = n images
   
   margin: 1.0
   optim:
