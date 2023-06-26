@@ -1,9 +1,9 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_Similarity_25_GeoVIPP_25 #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
+out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50_vertical_flip/ #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
 model_params:
   embedding_dim: 64
   weights: null #/data/omran/cities_data/models/pretrain_vit/vit_16h_model.pt #/data/omran/cities_data/models/city_classifier/Resnet50_10k/230203-0739/ckpts/epoch_38.ckpt #/data/omran/cities_data/models/city_classifier/Resnet50_ImageNet_15/230123-0409/ckpts/epoch_79.ckpt #'/data/omran/cities_data/models/city_classifier/ImageNetPretrain/221220-0814/ckpts/epoch_65.ckpt' # null -> all models are initialized with "ImageNet" weights or path to .ckpt to initialize from pre-trained model
-  similarity_training: true 
+  similarity_training: false 
   geovipp_training: true
   freezeBackbone : false
   num_pairs_validation: 8192 #6384 
