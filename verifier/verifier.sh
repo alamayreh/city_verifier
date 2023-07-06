@@ -32,7 +32,7 @@ done
 
 for city1 in ${city_list[@]}; do
    for city2 in ${city_list[@]}; do
-      python3 verifier_temp3.py --test_city $city1 --database_city $city2
+      python3 verifier_vit.py --test_city $city1 --database_city $city2
    done   
 done
 

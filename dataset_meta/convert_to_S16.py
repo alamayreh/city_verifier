@@ -51,10 +51,11 @@ def convert_to_S16(input_prob,scene_matrix,IMG_ID,city ):
 
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/validation"
 #folder_path = "/data/omran/cities_data/dataset/cities/csv_meta/open_set"
-folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/dataset_10k"
+#folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/dataset_10k"
+folder_path  = "/data/omran/cities_data/dataset/cities/csv_meta/Midjourney_cities"
 
-#for i in os.listdir(folder_path):
-for i in ['Berlin.csv']:
+for i in os.listdir(folder_path):
+#for i in ['Berlin.csv']:
 
 
     db           =  pd.read_csv(join(folder_path, i),error_bad_lines=False)

@@ -45,8 +45,9 @@ def parse_args():
 
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_100"),
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Similarity_025"),
-        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVipp_50"),
+        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVipp_50"),
         #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_25_similarity_25"),
+        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Midjourney_cities"),
 
         help="Results CSVs folder.",
     )
@@ -134,10 +135,13 @@ if __name__ == '__main__':
     if(args.set == 'closed'):
         city_list = ["Amsterdam", "Barcelona", "Berlin", "London", "NewYork", "LosAngeles", "Rome", "Milan", "Paris", "Tokyo"]
 
+
     if(args.set == 'open'):
         city_list = ["Amman", "Istanbul", "Mexico_city", "Singapore", "Quebec", "Vancouver","Florence", "Rome", "Rio_de_Janeiro","Delhi"] 
 
+
     print(f'                {city_list}')
+
     N = len(city_list)
 
     # Read similarity  
