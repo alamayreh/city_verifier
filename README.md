@@ -17,7 +17,8 @@ In: ECAI.
 ## Download Dataset
 
 ```bash
-comming soon
+pip install gdown
+gdown https://drive.google.com/uc?id=1Xc3YxdAQoCztFmYgIBZZc0Kq6-XWGT0a
 ```
 
 ## Reproduce Results
