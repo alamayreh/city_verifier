@@ -22,7 +22,24 @@ comming soon
 
 ## Reproduce Results
 
-comming soon
+Train a verifier (ViT 16 from ImageNet). 
+
+```bash
+python3 train_vit_siamese.py --config config/siamese_vit.yml
+```
+
+Afterwards, perform verification and store the results for each image pair.
+
+```bash
+verifier.sh
+```
+
+Finally, use an analysis script to obtain the final results.
+
+```bash
+python3 generate_tables_vit.py --set open  --thr 0.6 --GeoVIPP --Similarity
+```
+
 
 ## Citation
 ```BibTeX

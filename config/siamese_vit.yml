@@ -1,5 +1,5 @@
 # install pytorch-lightning==1.2.10
-out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50_vertical_flip/ #VippTraing_CityPretrainImageNe_NoFreezeBackbone_balanced_50
+out_dir: /data/omran/cities_data/models/dataset_10k/vit/last_exp/pretrain_ImgNet_GeoVIPP_50 # Output dir
 model_params:
   embedding_dim: 64
   weights: null
@@ -24,12 +24,12 @@ model_params:
       gamma: 0.5
       milestones: [4, 8, 12, 13, 14, 15]
 
-  imageFolderTrain:  /data/omran/cities_data/dataset/filtered/dataset_10k/training
-  imageFolderValid:  /data/omran/cities_data/dataset/filtered/dataset_10k/validation
-  imageFolderTest:   /data/omran/cities_data/dataset/filtered/dataset_10k/test
+  imageFolderTrain:  /data/omran/cities_data/City_Verification_Dataset/training
+  imageFolderValid:  /data/omran/cities_data/City_Verification_Dataset/validation
+  imageFolderTest:   /data/omran/cities_data/City_Verification_Dataset/test
 
-  database_csv:      /data/omran/cities_data/dataset/S16_database_10k.csv
-  database_vipp :    /data/omran/cities_data/dataset/Vipp_classes_10k.csv
+  database_csv:      /data/omran/cities_data/City_Verification_Dataset/meta/S16_database_10k.csv
+  database_vipp :    /data/omran/cities_data/City_Verification_Dataset/meta/Vipp_classes_10k.csv
 
   num_workers: 4 #6
 # paramters for pytorch lightning trainer class

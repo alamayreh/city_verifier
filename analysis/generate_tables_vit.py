@@ -26,14 +26,14 @@ def parse_args():
     args.add_argument(
         "--S16_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/S16_database_10k.csv"), 
+        default=Path("/data/omran/cities_data/City_Verification_Dataset/meta/S16_database_10k.csv"), 
         help="CSV folder for images database.",
     )
     
     args.add_argument(
         "--vipp_database",
         type=Path,
-        default=Path("/data/omran/cities_data/dataset/Vipp_classes_10k.csv"),
+        default=Path("/data/omran/cities_data/City_Verification_Dataset/meta/Vipp_classes_10k.csv"),
         help="Folder containing CSV files meta data for all images.",
     )
 
@@ -41,13 +41,7 @@ def parse_args():
         "--results_dir",
         type=Path,
         
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Base"),
-
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_100"),
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Similarity_025"),
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVipp_50"),
-        #default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/GeoVIPP_25_similarity_25"),
-        default=Path("/data/omran/cities_data/results/dataset_10k/ViT_ImgNet/Midjourney_cities"),
+        default=Path("/data/omran/cities_data/results"),
 
         help="Results CSVs folder.",
     )
