@@ -44,17 +44,15 @@ python3 generate_tables_vit.py --set open  --thr 0.6 --GeoVIPP --Similarity
 
 ## Citation
 ```BibTeX
-@inproceedings{,
-  author    = {Omran Alamayreh, Jun Wang, Giovanna Maria Dimitri, Benedetta Tondi and Mauro Barni},
-  title     = {A Siamese Based System For City Verification},
-  booktitle = {},
-  volume    = {},
-  pages     = {},
-  publisher = {},
-  year      = {},
-  url       = {},
-  doi       = {},
+@incollection{alamayreh2023siamese,
+  title={A Siamese Based System for City Verification},
+  author={Alamayreh, Omran and Wang, Jun and Dimitri, Giovanna Maria and Tondi, Benedetta and Barni, Mauro},
+  booktitle={ECAI 2023},
+  pages={69--76},
+  year={2023},
+  publisher={IOS Press}
 }
+
 ```
 
 
