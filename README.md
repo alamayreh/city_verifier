@@ -6,7 +6,7 @@
 
 </div>
 
-This is the official GitHub page for the paper:
+This is the official GitHub page for the paper ([Link](https://ebooks.iospress.nl/volumearticle/64187)):
 
 > Omran Alamayreh, Jun Wang, Giovanna Maria Dimitri, Benedetta Tondi and Mauro Barni:
 "A Siamese Based System For City Verification".
